@@ -23,6 +23,9 @@ const sentry =
     : false
 
 export default defineConfig({
+  optimizeDeps: {
+    noDiscovery: true,
+  },
   plugins: [
     desktopPlugin,
     icons(channel),

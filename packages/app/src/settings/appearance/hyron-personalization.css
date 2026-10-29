@@ -1,0 +1,11 @@
+/* HYRON Code 0.9.1. O painel usa classes isoladas para não afetar o layout OpenCode. */
+.hyron-customizer {padding:16px; margin:14px 0; border:1px solid var(--v2-border-base, #52685d); border-radius:12px; display:grid; gap:14px; min-width:0;}
+.hyron-customizer__heading {display:grid;gap:4px}.hyron-customizer__heading span {font-size:12px;opacity:.7}
+.hyron-customizer__preview {background:var(--hy-preview-bg); color:#f3fff9; min-height:142px; display:grid;grid-template-columns:30% 1fr; overflow:hidden;border-radius:9px;border:1px solid #647c73;}
+.hyron-customizer__sidebar {padding:12px;background:var(--hy-preview-surface);display:flex;flex-direction:column;gap:10px;font-size:12px}.hyron-customizer__sidebar span{color:var(--hy-preview-icon);font-weight:bold}.hyron-customizer__sidebar small{opacity:.75}
+.hyron-customizer__editor {padding:12px;display:flex;flex-direction:column;gap:12px;font-size:12px;background:rgba(0,0,0,.13)}.hyron-customizer__editor code,.hyron-customizer__editor p{color:var(--hy-preview-accent)}
+.hyron-customizer__controls {display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.hyron-customizer__controls label {display:flex;flex-direction:column;gap:6px;font-size:12px}
+.hyron-customizer__controls select,.hyron-customizer__controls input {min-height:32px;max-width:100%;border:1px solid var(--v2-border-base,#65756c);border-radius:5px;background:transparent;color:inherit;padding:4px}
+.hyron-customizer__controls select option{color:#111;background:#fff}.hyron-customizer__controls input[type=color]{width:100%;height:36px;padding:2px;cursor:pointer}
+.hyron-customizer__footer {display:flex;align-items:center;flex-wrap:wrap;gap:10px}.hyron-customizer__footer button{padding:7px 12px;border:1px solid var(--v2-border-base,#647);border-radius:6px}.hyron-customizer__footer small{opacity:.7}

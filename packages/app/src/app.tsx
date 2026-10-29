@@ -1,4 +1,5 @@
 import "@/index.css"
+import { restoreHyronVisual } from "@/settings/appearance/hyron-global"
 import { VoiceProvider } from "@/voice/context"
 import { VoiceOverlay } from "@/voice/composer"
 import { DialogProvider } from "@opencode/ui/context/dialog"
@@ -41,6 +42,7 @@ function QueryProvider(props: ParentProps) {
 function BodyTypography() {
   createRenderEffect(() => {
     if (typeof document === "undefined") return
+    restoreHyronVisual()
     document.body.classList.remove("text-12-regular")
     document.body.classList.add("font-(family-name:--font-family-text)", "text-[13px]", "font-[440]")
   })
