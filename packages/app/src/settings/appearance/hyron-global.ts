@@ -4,11 +4,20 @@ export type HyronVisual = {
   accent: string
   icon: string
   surface: string
+  sidebarColor?: string
+  settingsColor?: string
   background: "theme" | "solid" | "gradient" | "image"
   color: string
   color2: string
   angle: number
   image?: string
+  /** Fundo independente da conversa; vazio mantém o comportamento da V9. */
+  chatBackground?: "inherit" | "solid" | "gradient" | "image"
+  chatColor?: string
+  chatColor2?: string
+  chatAngle?: number
+  chatImage?: string
+  messageColor?: string
 }
 export const HYRON_KEY = "hyron_code_appearance_v091"
 const STYLE_ID = "hyron-code-global-appearance-v4"
@@ -23,11 +32,19 @@ export function normalizeVisual(raw: unknown): HyronVisual {
     accent: safe(p.accent, dark ? "#78e6cd" : "#196e5e"),
     icon: safe(p.icon, dark ? "#78e6cd" : "#196e5e"),
     surface: safe(p.surface, dark ? "#102820" : "#ffffff"),
+    sidebarColor: hex(p.sidebarColor) ? p.sidebarColor : undefined,
+    settingsColor: hex(p.settingsColor) ? p.settingsColor : undefined,
     background: p.background === "solid" || p.background === "gradient" || p.background === "image" ? p.background : "theme",
     color: safe(p.color, "#102820"),
     color2: safe(p.color2, "#184b3e"),
     angle: typeof p.angle === "number" && Number.isFinite(p.angle) ? Math.max(0, Math.min(360, Math.round(p.angle))) : 135,
     image: typeof p.image === "string" && /^data:image\/(?:png|jpeg|webp|gif);base64,[a-z0-9+/=]+$/i.test(p.image) && p.image.length < 900_000 ? p.image : undefined,
+    chatBackground: p.chatBackground === "solid" || p.chatBackground === "gradient" || p.chatBackground === "image" ? p.chatBackground : "inherit",
+    chatColor: safe(p.chatColor, "#102820"),
+    chatColor2: safe(p.chatColor2, "#184b3e"),
+    chatAngle: typeof p.chatAngle === "number" && Number.isFinite(p.chatAngle) ? Math.max(0, Math.min(360, Math.round(p.chatAngle))) : 135,
+    chatImage: typeof p.chatImage === "string" && /^data:image\/(?:png|jpeg|webp|gif);base64,[a-z0-9+/=]+$/i.test(p.chatImage) && p.chatImage.length < 900_000 ? p.chatImage : undefined,
+    messageColor: hex(p.messageColor) ? p.messageColor : undefined,
   }
 }
 const rgb = (color: string) => {
@@ -93,24 +110,81 @@ export function applyHyronVisual(raw: HyronVisual | null) {
     background-color: color-mix(in srgb, ${p.surface} 85%, transparent);
   }
   `
-  // HYRON-V7-SURFACES: camada de superficies isolada do sistema de tokens nativo.
-  // A selecao permanece limitada aos paineis conhecidos do OpenCode.
+  // V9: tokens nativos de tema. Evita seletores que pintam listas inteiras.
+  // As camadas sao progressivas; controles e paineis preservam suas estruturas.
   sheet.textContent += `
-  /* HYRON-V7-SURFACES */
+  /* HYRON-V9-NATIVE-TOKENS */
   :root[data-hyron-visual] {
     --hyron-code-panel: ${p.surface};
     --hyron-code-panel-text: ${surfaceFg};
-  }
-  :root[data-hyron-visual] [data-slot="session-side-panel-content"],
-  :root[data-hyron-visual] [data-slot="session-bottom-pane"],
-  :root[data-hyron-visual] [data-slot="home-sessions-list"] {
-    background-color: var(--hyron-code-panel) !important;
-    color: var(--hyron-code-panel-text);
-  }
-  :root[data-hyron-visual] [data-slot="session-chat-panel"] {
-    --hyron-session-surface: var(--hyron-code-panel);
+    --v2-background-bg-base: color-mix(in srgb, ${p.surface} 12%, ${bgColor}) !important;
+    --v2-background-bg-deep: color-mix(in srgb, ${p.surface} 22%, ${bgColor}) !important;
+    --v2-background-bg-layer-01: color-mix(in srgb, ${p.surface} 75%, ${bgColor}) !important;
+    --v2-background-bg-layer-02: ${p.surface} !important;
+    --v2-background-bg-layer-03: color-mix(in srgb, ${p.surface} 90%, ${surfaceFg} 10%) !important;
+    --background-base: color-mix(in srgb, ${p.surface} 12%, ${bgColor}) !important;
+    --background-weak: color-mix(in srgb, ${p.surface} 22%, ${bgColor}) !important;
+    --background-strong: color-mix(in srgb, ${p.surface} 70%, ${bgColor}) !important;
   }
   `
+  // V11.1: o balão usa automaticamente a mesma base cromática do fundo da conversa.
+  // A escolha manual messageColor continua tendo precedência.
+  const chatBase = p.chatBackground === "inherit" || !p.chatBackground
+    ? (p.background === "theme" ? bgColor : p.color)
+    : p.chatColor
+  const autoBubble = `color-mix(in srgb, ${chatBase} 76%, ${p.theme === "light" ? "#ffffff" : "#ffffff"} 24%)`
+  const autoBubbleText = contrast(chatBase)
+  // V10: a conversa tem fundo independente; sem escolha explicita, a V9 permanece intacta.
+  const chatMode = p.chatBackground ?? "inherit"
+  const chatImage = chatMode === "gradient" ? `linear-gradient(${p.chatAngle}deg, ${p.chatColor}, ${p.chatColor2})`
+    : chatMode === "image" && p.chatImage ? imageUrl(p.chatImage) : "none"
+  {
+    sheet.textContent += `
+    /* HYRON-V10-CHAT-BACKGROUND */
+    :root[data-hyron-visual] [data-slot="session-chat-panel"] {
+      ${chatMode !== "inherit" ? `background-color: ${p.chatColor} !important; background-image: ${chatImage} !important; background-position: center !important; background-size: cover !important;` : ""}
+    }
+    ${chatMode !== "inherit" ? `
+    :root[data-hyron-visual] [data-slot="session-chat-panel"] [data-slot="session-timeline-scroll"],
+    :root[data-hyron-visual] [data-slot="session-chat-panel"] [data-slot="session-timeline-scroll"] > .scroll-view__viewport,
+    :root[data-hyron-visual] [data-slot="session-chat-panel"] [data-slot="session-timeline-visible"] {
+      background: transparent !important;
+    }
+    ` : ""}
+    /* HYRON-V11-1-LINKED-BUBBLES: automatic unless an explicit message color exists. */
+    :root[data-hyron-visual] [data-slot="session-chat-panel"] [data-component="user-message"] [data-slot="user-message-text"] {
+      background-color: ${p.messageColor ?? autoBubble} !important;
+      color: ${p.messageColor ? contrast(p.messageColor) : autoBubbleText} !important;
+      border-radius: 10px;
+    }
+    `
+  }
+  // V11.2: independent colors. Undefined = inherit existing panel tokens.
+  // Rules are appended after V9 native tokens and apply only on explicit selection.
+  if (p.sidebarColor || p.settingsColor) {
+    sheet.textContent += `
+    /* HYRON-V11-2-AREA-COLORS */
+    ${p.sidebarColor ? `
+    :root[data-hyron-visual] [data-slot="vertical-tabs-sidebar"] {
+      --v2-background-bg-base: ${p.sidebarColor} !important;
+      --v2-background-bg-layer-01: ${p.sidebarColor} !important;
+      --v2-background-bg-layer-02: ${p.sidebarColor} !important;
+      background-color: ${p.sidebarColor} !important;
+    }
+    ` : ""}
+    ${p.settingsColor ? `
+    :root[data-hyron-visual] .settings-screen {
+      --v2-background-bg-base: ${p.settingsColor} !important;
+      --v2-background-bg-layer-01: ${p.settingsColor} !important;
+      background-color: ${p.settingsColor} !important;
+    }
+    :root[data-hyron-visual] .settings-screen .settings-panel {
+      --v2-background-bg-base: ${p.settingsColor} !important;
+      background-color: ${p.settingsColor} !important;
+    }
+    ` : ""}
+    `
+  }
   document.documentElement.dataset.hyronVisual = p.theme
 }
 export function restoreHyronVisual() {
