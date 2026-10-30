@@ -1,4 +1,4 @@
-/** HYRON Code 0.9.1 V4 — camada opt-in sobre os tokens do OpenCode. */
+﻿/** HYRON Code 0.9.1 V4 â€” camada opt-in sobre os tokens do OpenCode. */
 export type HyronVisual = {
   theme: "hydra" | "dark" | "light"
   accent: string
@@ -11,7 +11,7 @@ export type HyronVisual = {
   color2: string
   angle: number
   image?: string
-  /** Fundo independente da conversa; vazio mantém o comportamento da V9. */
+  /** Fundo independente da conversa; vazio mantÃ©m o comportamento da V9. */
   chatBackground?: "inherit" | "solid" | "gradient" | "image"
   chatColor?: string
   chatColor2?: string
@@ -74,19 +74,23 @@ export function applyHyronVisual(raw: HyronVisual | null) {
     sheet.id = STYLE_ID
     document.head.appendChild(sheet)
   }
-  const foreground = contrast(p.accent)
   const surfaceFg = contrast(p.surface)
-  const bg = p.background === "solid" ? p.color
+  const bg = p.background === "solid" ? "none"
     : p.background === "gradient" ? `linear-gradient(${p.angle}deg, ${p.color}, ${p.color2})`
     : p.background === "image" && p.image ? imageUrl(p.image) : "none"
-  const bgColor = p.background === "solid" ? p.color : p.background === "theme" ? (p.theme === "light" ? "#eff2f5" : p.theme === "dark" ? "#101114" : "#071310") : p.color
-  // Tokens com !important prevalecem sobre o elemento #oc-theme, que pode ser reescrito quando o esquema muda.
-  // Não são alteradas cores de erro/aviso nem tokens sintáticos do editor.
-  sheet.textContent = `:root {
+  const defaultBg = p.theme === "light" ? "#eff2f5" : p.theme === "dark" ? "#101114" : "#071310"
+  const bgColor = p.background === "theme" ? defaultBg : p.color
+  // V11.7: texto, fundo e superficie possuem responsabilidades distintas.
+  // A cor de fundo nao altera tokens 'deep' nem 'layer': esses tokens tambem
+  // sao usados pela barra superior e pelos estados dos botoes.
+  sheet.textContent = `
+  :root[data-hyron-visual] {
     --hyron-code-accent: ${p.accent};
     --hyron-code-icon: ${p.icon};
     --hyron-code-surface: ${p.surface};
-    /* V11.6: primeiro plano global governado pela cor principal. */
+    --hyron-code-on-surface: ${surfaceFg};
+    --hyron-code-background: ${bgColor};
+    --hyron-code-wallpaper: ${bg};
     --v2-text-text-base: ${p.accent} !important;
     --v2-text-text-muted: ${p.accent} !important;
     --v2-text-text-faint: ${p.accent} !important;
@@ -101,49 +105,28 @@ export function applyHyronVisual(raw: HyronVisual | null) {
     --text-interactive-base: ${p.accent} !important;
     --v2-text-text-accent: ${p.accent} !important;
     --v2-text-text-accent-hover: ${p.accent} !important;
-    --v2-icon-icon-accent: ${p.icon} !important;
-    --v2-background-bg-accent: ${p.accent} !important;
+    --v2-icon-icon-accent: ${p.accent} !important;
     --v2-border-border-focus: ${p.accent} !important;
-    --v2-text-text-contrast: ${foreground} !important;
-    --hyron-code-on-surface: ${surfaceFg};
-    --hyron-code-background: ${bgColor};
-    --hyron-code-wallpaper: ${bg};
+    /* Somente o token da superficie-base de conteudo recebe o fundo geral. */
+    --v2-background-bg-base: ${bgColor} !important;
   }
   :root[data-hyron-visual] #root {
-    background-color: var(--hyron-code-background);
-    background-image: var(--hyron-code-wallpaper);
+    background-color: ${defaultBg};
+  }
+  /* O painel principal recebe o papel de parede; a moldura e o titulo nao. */
+  :root[data-hyron-visual] :is(.settings-screen, [data-slot="session-chat-panel"]) {
+    background-color: ${bgColor};
+    background-image: ${bg};
     background-position: center;
     background-size: cover;
-    background-attachment: fixed;
   }
-  :root[data-hyron-visual] [data-slot="session-chat-panel"] {
-    --hyron-session-surface: ${p.surface};
-  }
-  :root[data-hyron-visual] [data-slot="session-chat-panel"] [data-slot="session-timeline-scroll"] {
-    background-color: color-mix(in srgb, ${p.surface} 85%, transparent);
+  /* A cor de paineis nao deve vazar para os botoes e abas. */
+  :root[data-hyron-visual] :is([data-slot="session-composer"], [data-slot="composer"], [data-component="card"]) {
+    background-color: ${p.surface};
   }
   `
-  // V9: tokens nativos de tema. Evita seletores que pintam listas inteiras.
-  // As camadas sao progressivas; controles e paineis preservam suas estruturas.
-  sheet.textContent += `
-  /* HYRON-V9-NATIVE-TOKENS */
-  :root[data-hyron-visual] {
-    --hyron-code-panel: ${p.surface};
-    --hyron-code-panel-text: ${surfaceFg};
-    /* Fundo geral e fundo profundo: sem mistura com os paineis. */
-    --v2-background-bg-base: ${bgColor} !important;
-    --v2-background-bg-deep: ${bgColor} !important;
-    /* Camadas internas: derivadas da cor dos paineis. */
-    --v2-background-bg-layer-01: ${p.surface} !important;
-    --v2-background-bg-layer-02: ${p.surface} !important;
-    --v2-background-bg-layer-03: color-mix(in srgb, ${p.surface} 90%, ${surfaceFg} 10%) !important;
-    --background-base: ${bgColor} !important;
-    --background-weak: ${bgColor} !important;
-    --background-strong: ${p.surface} !important;
-  }
-  `
-  // V11.1: o balão usa automaticamente a mesma base cromática do fundo da conversa.
-  // A escolha manual messageColor continua tendo precedência.
+  // V11.1: o balÃ£o usa automaticamente a mesma base cromÃ¡tica do fundo da conversa.
+  // A escolha manual messageColor continua tendo precedÃªncia.
   const chatBase = p.chatBackground === "inherit" || !p.chatBackground
     ? (p.background === "theme" ? bgColor : p.color)
     : (p.chatColor ?? bgColor)
@@ -175,7 +158,7 @@ export function applyHyronVisual(raw: HyronVisual | null) {
     `
   }
   // V11.4: somente o painel de fundo da barra e a tela de ajustes recebem suas cores.
-  // Somente uma seleção explícita ativa cada regra; demais áreas herdam o tema.
+  // Somente uma seleÃ§Ã£o explÃ­cita ativa cada regra; demais Ã¡reas herdam o tema.
   if (p.sidebarColor || p.settingsColor) {
     sheet.textContent += `
     /* HYRON-V11-3-ISOLATED-AREA-COLORS */
@@ -214,6 +197,38 @@ export function applyHyronVisual(raw: HyronVisual | null) {
     color: ${p.accent} !important;
   }
   `
+  // V11.8: menu vertical sem blocos opacos; destaque apenas no item ativo.
+  // O escopo impede interferencia com as abas horizontais e as configuracoes.
+  sheet.textContent += `
+  /* HYRON-V11-8-MINIMAL-SIDEBAR */
+  :root[data-hyron-visual] [data-slot="vertical-tabs-mount"] [data-titlebar-tab],
+  :root[data-hyron-visual] [data-slot="vertical-tabs-mount"] [data-titlebar-tab-action] {
+    --tab-base: transparent !important;
+    --tab-overlay: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-color: transparent !important;
+  }
+  :root[data-hyron-visual] [data-slot="vertical-tabs-mount"] [data-titlebar-tab]:not([data-active="true"]):not([data-state="pressed"]),
+  :root[data-hyron-visual] [data-slot="vertical-tabs-mount"] [data-titlebar-tab-action]:not([data-state="pressed"]) {
+    opacity: 0.76;
+  }
+  :root[data-hyron-visual] [data-slot="vertical-tabs-mount"] [data-titlebar-tab]:not([data-active="true"]):hover,
+  :root[data-hyron-visual] [data-slot="vertical-tabs-mount"] [data-titlebar-tab-action]:hover {
+    background: color-mix(in srgb, ${p.accent} 9%, transparent) !important;
+    opacity: 1;
+  }
+  :root[data-hyron-visual] [data-slot="vertical-tabs-mount"] [data-titlebar-tab][data-active="true"],
+  :root[data-hyron-visual] [data-slot="vertical-tabs-mount"] [data-titlebar-tab][data-state="pressed"] {
+    background: color-mix(in srgb, ${p.accent} 15%, transparent) !important;
+    border-inline-start: 2px solid ${p.accent} !important;
+    opacity: 1 !important;
+  }
+  :root[data-hyron-visual] [data-slot="vertical-tabs-mount"] [data-titlebar-tab] [data-slot="tab-link"],
+  :root[data-hyron-visual] [data-slot="vertical-tabs-mount"] [data-titlebar-tab-action] {
+    color: ${p.accent} !important;
+  }
+  `
   document.documentElement.dataset.hyronVisual = p.theme
 }
 export function restoreHyronVisual() {
@@ -226,3 +241,4 @@ export function restoreHyronVisual() {
     applyHyronVisual(null)
   }
 }
+

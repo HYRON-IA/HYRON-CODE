@@ -28,3 +28,8 @@
 .hyron-v11-note{font-size:12px;opacity:.8;margin:0}
 .hyron-v11-logo-actions button{border:1px solid var(--v2-border-border-base,#53615a);border-radius:9px;padding:9px 14px;font-size:12px;font-weight:600}
 @media(max-width:480px){.hyron-v11-themes{gap:5px}.hyron-v11-colors{gap:8px}}
+
+/* HYRON Code: preview real da marca exportavel. */
+.hyron-v11-brand-preview{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--v2-border-base,#445);border-radius:9px;min-height:68px}
+.hyron-v11-brand-preview img{height:48px;width:48px;object-fit:contain}
+.hyron-v11-brand-preview strong{font-size:18px;font-weight:700}

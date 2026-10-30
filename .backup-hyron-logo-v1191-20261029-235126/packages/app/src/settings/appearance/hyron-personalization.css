@@ -1,0 +1,30 @@
+/* HYRON Code 0.9.1. O painel usa classes isoladas para não afetar o layout OpenCode. */
+.hyron-customizer {padding:16px; margin:14px 0; border:1px solid var(--v2-border-base, #52685d); border-radius:12px; display:grid; gap:14px; min-width:0;}
+.hyron-customizer__heading {display:grid;gap:4px}.hyron-customizer__heading span {font-size:12px;opacity:.7}
+.hyron-customizer__preview {background:var(--hy-preview-bg); color:#f3fff9; min-height:142px; display:grid;grid-template-columns:30% 1fr; overflow:hidden;border-radius:9px;border:1px solid #647c73;}
+.hyron-customizer__sidebar {padding:12px;background:var(--hy-preview-surface);display:flex;flex-direction:column;gap:10px;font-size:12px}.hyron-customizer__sidebar span{color:var(--hy-preview-icon);font-weight:bold}.hyron-customizer__sidebar small{opacity:.75}
+.hyron-customizer__editor {padding:12px;display:flex;flex-direction:column;gap:12px;font-size:12px;background:rgba(0,0,0,.13)}.hyron-customizer__editor code,.hyron-customizer__editor p{color:var(--hy-preview-accent)}
+.hyron-customizer__controls {display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.hyron-customizer__controls label {display:flex;flex-direction:column;gap:6px;font-size:12px}
+.hyron-customizer__controls select,.hyron-customizer__controls input {min-height:32px;max-width:100%;border:1px solid var(--v2-border-base,#65756c);border-radius:5px;background:transparent;color:inherit;padding:4px}
+.hyron-customizer__controls select option{color:#111;background:#fff}.hyron-customizer__controls input[type=color]{width:100%;height:36px;padding:2px;cursor:pointer}
+.hyron-customizer__footer {display:flex;align-items:center;flex-wrap:wrap;gap:10px}.hyron-customizer__footer button{padding:7px 12px;border:1px solid var(--v2-border-base,#647);border-radius:6px}.hyron-customizer__footer small{opacity:.7}
+
+/* HYRON V11 - cartoes e cores da identidade, inspirados no painel original. */
+.hyron-v11-group-title {display:flex;align-items:center;gap:14px;margin:5px 0 0;font-size:13px}
+.hyron-v11-group-title span{height:1px;background:var(--v2-border-border-base,#4b5654);flex:1;opacity:.7}
+.hyron-v11-themes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.hyron-v11-theme{min-width:0;text-align:left;border:1px solid var(--v2-border-border-base,#59645e);padding:8px;border-radius:10px;display:grid;gap:6px;background:transparent;color:inherit;cursor:pointer;font-size:12px}
+.hyron-v11-theme.is-active{border:2px solid var(--v2-text-text-primary,#fff);padding:7px}
+.hyron-v11-theme-preview{height:54px;border-radius:6px;padding:12px;position:relative;display:flex;flex-direction:column;justify-content:center;gap:6px}
+.hyron-v11-theme-preview i{height:5px;width:48%;border-radius:4px}.hyron-v11-theme-preview i:nth-child(2){width:70%;opacity:.55}
+.hyron-v11-theme-preview b{position:absolute;right:7px;top:5px;font-size:13px;font-weight:normal}
+.hyron-v11-theme-hydra{background:#071713;color:#75e6ca}.hyron-v11-theme-hydra i{background:#75e6ca}
+.hyron-v11-theme-dark{background:#16171c;color:#a8b3ff}.hyron-v11-theme-dark i{background:#a8b3ff}
+.hyron-v11-theme-light{background:#e9f1f8;color:#2b7965}.hyron-v11-theme-light i{background:#2b7965}
+.hyron-v11-colors{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.hyron-v11-color-field{display:flex;flex-direction:column;gap:5px;font-size:12px;min-width:0}
+.hyron-v11-color-field input[type=color]{height:40px;min-width:0;width:100%;background:transparent;border:1px solid var(--v2-border-border-base,#53615a);padding:6px;border-radius:9px;cursor:pointer}
+.hyron-v11-note{font-size:12px;opacity:.8;margin:0}
+.hyron-v11-logo-actions button{border:1px solid var(--v2-border-border-base,#53615a);border-radius:9px;padding:9px 14px;font-size:12px;font-weight:600}
+@media(max-width:480px){.hyron-v11-themes{gap:5px}.hyron-v11-colors{gap:8px}}

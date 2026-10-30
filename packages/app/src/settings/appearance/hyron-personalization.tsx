@@ -88,6 +88,7 @@ export function HyronPersonalization() {
     const next = normalize({ ...prefs(), ...change })
     setPrefs(next)
     paint(next)
+    try { localStorage.setItem(KEY, JSON.stringify(next)); window.dispatchEvent(new Event("hyron-brand-change")) } catch {}
     if (saveTimer) clearTimeout(saveTimer)
     saveTimer = setTimeout(() => {
       try { localStorage.setItem(KEY, JSON.stringify(next)); setMessage("Preferências salvas neste navegador.") }
@@ -156,6 +157,10 @@ export function HyronPersonalization() {
       {colorField("Fundo da logo", prefs().logoBackground!, "logoBackground")}
     </div>
     <p class="hyron-v11-note">A logo é um SVG: as cores mudam nos traços, mantendo a nitidez em qualquer tamanho.</p>
+    <div class="hyron-v11-brand-preview" aria-label="Prévia da logo HYRON Code">
+      <img alt="Cobra HYRON com as cores escolhidas" src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(colorizeCobraSvg({ body: prefs().logoBody!, eyes: prefs().logoEyes!, stripes: prefs().logoStripes!, background: prefs().logoBackground! }))}`} />
+      <strong>HYRON Code</strong>
+    </div>
     <div class="hyron-v11-logo-actions"><button type="button" onClick={exportLogo}>Baixar minha logo em SVG</button></div>
     <div class="hyron-v11-group-title"><strong>Fundo geral do aplicativo</strong><span /></div>
     <div class="hyron-customizer__controls">
