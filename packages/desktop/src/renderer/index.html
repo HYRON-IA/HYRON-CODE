@@ -4,7 +4,27 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- data-sm lets the MetaProvider replace this pre-load title with the app's <Title> tags. -->
-    <title data-sm>OpenCode</title>
+    <title data-sm>HYRON Code</title>
+<script>
+  // HYRON_TITLE_RUNTIME_GUARD_V1116 - preserva nomes das sessoes e troca apenas a marca final.
+  (() => {
+    const replaceBrand = () => {
+      const title = document.querySelector('title')
+      if (!title) return
+      const original = title.textContent || ''
+      const changed = original.replace(/(^|[\sÂ·|â€”-])OpenCode\s*$/u, '$1HYRON Code')
+      if (changed !== original) title.textContent = changed
+    }
+    const start = () => {
+      replaceBrand()
+      new MutationObserver(replaceBrand).observe(document.head, {
+        subtree: true, childList: true, characterData: true
+      })
+    }
+    if (document.head) start()
+    else document.addEventListener('DOMContentLoaded', start, { once: true })
+  })()
+</script>
     <link rel="icon" type="image/png" href="./favicon-96x96-v3.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="./favicon-v3.svg" />
     <link rel="shortcut icon" href="./favicon-v3.ico" />
