@@ -86,6 +86,19 @@ export function applyHyronVisual(raw: HyronVisual | null) {
     --hyron-code-accent: ${p.accent};
     --hyron-code-icon: ${p.icon};
     --hyron-code-surface: ${p.surface};
+    /* V11.6: primeiro plano global governado pela cor principal. */
+    --v2-text-text-base: ${p.accent} !important;
+    --v2-text-text-muted: ${p.accent} !important;
+    --v2-text-text-faint: ${p.accent} !important;
+    --v2-icon-icon-base: ${p.accent} !important;
+    --v2-icon-icon-muted: ${p.accent} !important;
+    --v2-icon-icon-faint: ${p.accent} !important;
+    --text-base: ${p.accent} !important;
+    --text-strong: ${p.accent} !important;
+    --text-stronger: ${p.accent} !important;
+    --text-weak: ${p.accent} !important;
+    --text-weaker: ${p.accent} !important;
+    --text-interactive-base: ${p.accent} !important;
     --v2-text-text-accent: ${p.accent} !important;
     --v2-text-text-accent-hover: ${p.accent} !important;
     --v2-icon-icon-accent: ${p.icon} !important;
@@ -117,21 +130,23 @@ export function applyHyronVisual(raw: HyronVisual | null) {
   :root[data-hyron-visual] {
     --hyron-code-panel: ${p.surface};
     --hyron-code-panel-text: ${surfaceFg};
-    --v2-background-bg-base: color-mix(in srgb, ${p.surface} 12%, ${bgColor}) !important;
-    --v2-background-bg-deep: color-mix(in srgb, ${p.surface} 22%, ${bgColor}) !important;
-    --v2-background-bg-layer-01: color-mix(in srgb, ${p.surface} 75%, ${bgColor}) !important;
+    /* Fundo geral e fundo profundo: sem mistura com os paineis. */
+    --v2-background-bg-base: ${bgColor} !important;
+    --v2-background-bg-deep: ${bgColor} !important;
+    /* Camadas internas: derivadas da cor dos paineis. */
+    --v2-background-bg-layer-01: ${p.surface} !important;
     --v2-background-bg-layer-02: ${p.surface} !important;
     --v2-background-bg-layer-03: color-mix(in srgb, ${p.surface} 90%, ${surfaceFg} 10%) !important;
-    --background-base: color-mix(in srgb, ${p.surface} 12%, ${bgColor}) !important;
-    --background-weak: color-mix(in srgb, ${p.surface} 22%, ${bgColor}) !important;
-    --background-strong: color-mix(in srgb, ${p.surface} 70%, ${bgColor}) !important;
+    --background-base: ${bgColor} !important;
+    --background-weak: ${bgColor} !important;
+    --background-strong: ${p.surface} !important;
   }
   `
   // V11.1: o balão usa automaticamente a mesma base cromática do fundo da conversa.
   // A escolha manual messageColor continua tendo precedência.
   const chatBase = p.chatBackground === "inherit" || !p.chatBackground
     ? (p.background === "theme" ? bgColor : p.color)
-    : p.chatColor
+    : (p.chatColor ?? bgColor)
   const autoBubble = `color-mix(in srgb, ${chatBase} 76%, ${p.theme === "light" ? "#ffffff" : "#ffffff"} 24%)`
   const autoBubbleText = contrast(chatBase)
   // V10: a conversa tem fundo independente; sem escolha explicita, a V9 permanece intacta.
@@ -159,32 +174,46 @@ export function applyHyronVisual(raw: HyronVisual | null) {
     }
     `
   }
-  // V11.2: independent colors. Undefined = inherit existing panel tokens.
-  // Rules are appended after V9 native tokens and apply only on explicit selection.
+  // V11.4: somente o painel de fundo da barra e a tela de ajustes recebem suas cores.
+  // Somente uma seleção explícita ativa cada regra; demais áreas herdam o tema.
   if (p.sidebarColor || p.settingsColor) {
     sheet.textContent += `
-    /* HYRON-V11-2-AREA-COLORS */
+    /* HYRON-V11-3-ISOLATED-AREA-COLORS */
     ${p.sidebarColor ? `
-    :root[data-hyron-visual] [data-slot="vertical-tabs-sidebar"] {
-      --v2-background-bg-base: ${p.sidebarColor} !important;
-      --v2-background-bg-layer-01: ${p.sidebarColor} !important;
-      --v2-background-bg-layer-02: ${p.sidebarColor} !important;
+    /* Somente as duas superficies reais da barra. Nao modificar tokens
+       herdados: os botoes e abas devem continuar usando o tema nativo. */
+    :root[data-hyron-visual] [data-slot="vertical-tabs-sidebar"] > [data-slot="vertical-tabs-panel"] > [data-slot="vertical-tabs-mount"],
+    :root[data-hyron-visual] [data-slot="vertical-tabs-sidebar"] > [data-slot="vertical-tabs-panel"] > [data-slot="vertical-tabs-peek-surface"] {
       background-color: ${p.sidebarColor} !important;
+      background-image: none !important;
     }
     ` : ""}
     ${p.settingsColor ? `
     :root[data-hyron-visual] .settings-screen {
       --v2-background-bg-base: ${p.settingsColor} !important;
+      --v2-background-bg-deep: ${p.settingsColor} !important;
       --v2-background-bg-layer-01: ${p.settingsColor} !important;
-      background-color: ${p.settingsColor} !important;
+      --v2-background-bg-layer-02: color-mix(in srgb, ${p.settingsColor} 88%, ${contrast(p.settingsColor)} 12%) !important;
+      --v2-background-bg-layer-03: color-mix(in srgb, ${p.settingsColor} 82%, ${contrast(p.settingsColor)} 18%) !important;
+      background: ${p.settingsColor} !important;
     }
-    :root[data-hyron-visual] .settings-screen .settings-panel {
-      --v2-background-bg-base: ${p.settingsColor} !important;
-      background-color: ${p.settingsColor} !important;
+    :root[data-hyron-visual] .settings-screen .settings-tab-header {
+      background: ${p.settingsColor} !important;
     }
     ` : ""}
     `
   }
+  // V11.5: texto e icones da barra lateral seguem a cor principal.
+  // Somente a cor do primeiro plano e alterada; fundo dos botoes,
+  // hover e selecao continuam sob controle do tema nativo.
+  sheet.textContent += `
+  /* HYRON-V11-5-SIDEBAR-FOREGROUND */
+  :root[data-hyron-visual] [data-slot="vertical-tabs-mount"] :is(a, button, [role="button"], [data-titlebar-tab-link]),
+  :root[data-hyron-visual] [data-slot="vertical-tabs-mount"] :is(a, button, [role="button"], [data-titlebar-tab-link]) :is(span, svg),
+  :root[data-hyron-visual] [data-slot="vertical-tabs-mount"] [data-slot="sidebar-header"] :is(span, svg) {
+    color: ${p.accent} !important;
+  }
+  `
   document.documentElement.dataset.hyronVisual = p.theme
 }
 export function restoreHyronVisual() {
