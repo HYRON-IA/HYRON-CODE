@@ -1,6 +1,7 @@
 import { encodeFilePath, getFilename } from "@opencode/util/path"
 import { parseSessionMention } from "@opencode/util/session-mention"
 import { serializePrompt } from "./prompt-parts"
+import { readHyronPersonalityInstruction } from "@/settings/appearance/hyron-personality" // HYRON-CODE-0931-PERSONALIDADE
 import type { FileSelection } from "@/workspaces/files/model"
 import type {
   AgentPart,
@@ -219,7 +220,10 @@ export function buildPromptRequest(input: BuildPromptRequestInput): PromptReques
 
         return formatCommentNote(comment)
       }),
-    ].join("\n"),
+    ].concat((() => {
+      const instruction = readHyronPersonalityInstruction()
+      return instruction ? [`[Preferencia de estilo HYRON-CODE; respeite instrucoes superiores, regras e contexto da tarefa: ${instruction}]`] : []
+    })()).join("\n"),
     displayText: text,
     files: [...files, ...context, ...inline],
     agents,

@@ -1,5 +1,7 @@
 import "@/index.css"
 import { restoreHyronVisual } from "@/settings/appearance/hyron-global"
+import { restoreHyronWatermark } from "@/settings/appearance/hyron-watermark"
+import { updateHyronDesktopIcon } from "@/settings/appearance/hyron-dynamic-icon-renderer"
 import { VoiceProvider } from "@/voice/context"
 import { VoiceOverlay } from "@/voice/composer"
 import { DialogProvider } from "@opencode/ui/context/dialog"
@@ -9,7 +11,7 @@ import { ThemeProvider } from "@opencode/ui/theme/context"
 import { MetaProvider, Title } from "@solidjs/meta"
 import { type BaseRouterProps, Router } from "@solidjs/router"
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query"
-import { type Component, createRenderEffect, ErrorBoundary, type JSX, type ParentProps } from "solid-js"
+import { type Component, createRenderEffect, ErrorBoundary, onCleanup, onMount, type JSX, type ParentProps } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { CommandProvider } from "@/shell/commands/command"
 import { DesktopCommands } from "@/shell/commands/desktop"
@@ -40,9 +42,22 @@ function QueryProvider(props: ParentProps) {
 }
 
 function BodyTypography() {
+  onMount(() => {
+    updateHyronDesktopIcon()
+    window.addEventListener("hyron-brand-change", updateHyronDesktopIcon)
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === "hyron_code_appearance_v091") updateHyronDesktopIcon()
+    }
+    window.addEventListener("storage", onStorage)
+    onCleanup(() => {
+      window.removeEventListener("hyron-brand-change", updateHyronDesktopIcon)
+      window.removeEventListener("storage", onStorage)
+    })
+  })
   createRenderEffect(() => {
     if (typeof document === "undefined") return
     restoreHyronVisual()
+    restoreHyronWatermark()
     document.body.classList.remove("text-12-regular")
     document.body.classList.add("font-(family-name:--font-family-text)", "text-[13px]", "font-[440]")
   })

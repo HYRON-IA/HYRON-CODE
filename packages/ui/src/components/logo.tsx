@@ -1,22 +1,8 @@
 import { createSignal, onCleanup, onMount, type ComponentProps } from "solid-js"
-import { colorizeCobraSvg } from "./hyron-cobra"
+import { HYRON_CODE_MARK } from "./hyron-code-official-mark"
 
-const PREF_KEY = "hyron_code_appearance_v091"
-const DEFAULT_COLORS = { body: "#00cfea", eyes: "#f1cf13", stripes: "#660000", background: "#000000" }
-function readColors() {
-  try {
-    const raw = JSON.parse(localStorage.getItem(PREF_KEY) ?? "{}")
-    const valid = (value: unknown, fallback: string) => typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value) ? value : fallback
-    return {
-      body: valid(raw.logoBody, DEFAULT_COLORS.body),
-      eyes: valid(raw.logoEyes, DEFAULT_COLORS.eyes),
-      stripes: valid(raw.logoStripes, DEFAULT_COLORS.stripes),
-      background: valid(raw.logoBackground, DEFAULT_COLORS.background),
-    }
-  } catch { return DEFAULT_COLORS }
-}
 function useCobra() {
-  const make = () => `data:image/svg+xml;charset=utf-8,${encodeURIComponent(colorizeCobraSvg(readColors()))}`
+  const make = () => HYRON_CODE_MARK
   const [src, setSrc] = createSignal("")
   onMount(() => {
     const refresh = () => setSrc(make())
@@ -42,6 +28,6 @@ export const Logo = (props: { class?: string }) => {
   const src = useCobra()
   return <svg data-component="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234 42" fill="none" classList={{ [props.class ?? ""]: !!props.class }}>
     <image href={src()} x="0" y="0" width="42" height="42" preserveAspectRatio="xMidYMid meet" />
-    <text x="50" y="28" font-size="24" font-family="system-ui, sans-serif" font-weight="700" fill="var(--icon-strong-base, currentColor)">HYRON Code</text>
+    <text x="50" y="28" font-size="24" font-family="system-ui, sans-serif" font-weight="700" fill="var(--icon-strong-base, currentColor)">HYRON-CODE</text>
   </svg>
 }

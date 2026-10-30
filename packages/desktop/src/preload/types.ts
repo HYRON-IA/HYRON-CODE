@@ -7,4 +7,5 @@ export type ElectronNative = {
   storageSnapshot: Promise<StorageSnapshot>
   plugins: Promise<WindowSnapshot["plugins"]>
   getPathForFile(file: File): string
+  setHyronIcon(png: string): void
 }

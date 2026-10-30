@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { app, BrowserWindow, screen, shell } from "electron"
+import "./hyron-dynamic-icon"
 import { Predicate } from "effect"
 import { resolveExternalURL } from "../files/external-url"
 import { windowArguments } from "./bootstrap"
@@ -50,7 +51,7 @@ export function createEarlyWindow() {
     height: state.height,
     show: true,
     autoHideMenuBar: true,
-    title: "HYRON Code",
+    title: "HYRON-CODE",
     icon: path.join(icons, `icon.${process.platform === "win32" ? "ico" : "png"}`),
     backgroundColor: storedBackgroundColor(),
     ...platformFrame(tone(), zoom),

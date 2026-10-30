@@ -1,5 +1,6 @@
 import { Component, Show } from "solid-js"
 import { HyronPersonalization } from "./hyron-personalization"
+import { HyronPersonalitySettings } from "./hyron-personality" // HYRON-CODE-0931-PERSONALIDADE
 import { Select } from "@opencode/ui/select"
 import { TextInput } from "@opencode/ui/text-input"
 import { useLanguage } from "@/runtime/i18n/language"
@@ -133,6 +134,7 @@ export const SettingsAppearance: Component = () => {
             </SettingsRow>
 
             <HyronPersonalization />
+            <HyronPersonalitySettings />
 
             <FontSetting kind="ui" fonts={appearance.fonts} />
             <FontSetting kind="code" fonts={appearance.fonts} />

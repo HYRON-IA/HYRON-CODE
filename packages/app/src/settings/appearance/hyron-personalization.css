@@ -33,3 +33,7 @@
 .hyron-v11-brand-preview{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--v2-border-base,#445);border-radius:9px;min-height:68px}
 .hyron-v11-brand-preview img{height:48px;width:48px;object-fit:contain}
 .hyron-v11-brand-preview strong{font-size:18px;font-weight:700}
+
+.hyron-orbital-preview { min-height: 116px; gap: 16px; }
+.hyron-orbital-preview img { width: 96px; height: 96px; object-fit: contain; flex-shrink: 0; }
+.hyron-orbit-reset { text-align: left; font-size: 11px; text-decoration: underline; padding: 3px 0; }

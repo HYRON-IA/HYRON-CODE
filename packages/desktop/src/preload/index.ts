@@ -29,4 +29,5 @@ contextBridge.exposeInMainWorld("electron", {
   storageSnapshot: snapshot.then((snapshot) => snapshot.storage),
   plugins: snapshot.then((snapshot) => snapshot.plugins),
   getPathForFile: (file: File) => webUtils.getPathForFile(file),
+  setHyronIcon: (png: string) => ipcRenderer.send("hyron-code:dynamic-window-icon:v1", png),
 })

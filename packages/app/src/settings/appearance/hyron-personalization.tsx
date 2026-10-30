@@ -1,7 +1,9 @@
 import { applyHyronVisual, normalizeVisual, HYRON_KEY } from "./hyron-global"
 import { createSignal, onMount, onCleanup, Show } from "solid-js"
 import "./hyron-personalization.css"
-import { colorizeCobraSvg } from "./hyron-cobra-logo"
+import { HyronAppearanceProfiles } from "./hyron-appearance-profiles" // HYRON-CODE 0.9.2.9 - profiles
+import { HyronWatermarkSettings } from "./hyron-watermark"
+import { renderOrbitalLogo } from "./hyron-orbital-colors"
 
 /** HYRON Code 0.9.1. Preferências locais, independentes do motor OpenCode. */
 type Theme = "hydra" | "dark" | "light"
@@ -28,6 +30,16 @@ type Prefs = {
   logoEyes?: string
   logoStripes?: string
   logoBackground?: string
+  sphereTL?: string
+  sphereTR?: string
+  sphereBL?: string
+  sphereBR?: string
+  sphereCore?: string
+  snakeEye?: string
+  hyronSnakeBody?: string
+  hyronRingOne?: string
+  hyronRingTwo?: string
+  hyronRingThree?: string
 }
 const KEY = HYRON_KEY
 const presets: Record<Theme, Omit<Prefs, "theme" | "background" | "color" | "color2" | "angle"> & { canvas: string }> = {
@@ -63,6 +75,16 @@ function normalize(input: unknown): Prefs {
     logoEyes: valid(p.logoEyes) ? p.logoEyes : "#f1cf13",
     logoStripes: valid(p.logoStripes) ? p.logoStripes : "#660000",
     logoBackground: valid(p.logoBackground) ? p.logoBackground : "#000000",
+    sphereTL: valid(p.sphereTL) ? p.sphereTL : undefined,
+    sphereTR: valid(p.sphereTR) ? p.sphereTR : undefined,
+    sphereBL: valid(p.sphereBL) ? p.sphereBL : undefined,
+    sphereBR: valid(p.sphereBR) ? p.sphereBR : undefined,
+    sphereCore: valid(p.sphereCore) ? p.sphereCore : undefined,
+    snakeEye: valid(p.snakeEye) ? p.snakeEye : undefined,
+    hyronSnakeBody: valid(p.hyronSnakeBody) ? p.hyronSnakeBody : undefined,
+    hyronRingOne: valid(p.hyronRingOne) ? p.hyronRingOne : undefined,
+    hyronRingTwo: valid(p.hyronRingTwo) ? p.hyronRingTwo : undefined,
+    hyronRingThree: valid(p.hyronRingThree) ? p.hyronRingThree : undefined,
   }
 }
 function background(p: Prefs): string {
@@ -84,6 +106,17 @@ export function HyronPersonalization() {
     paint(prefs())
   })
   onCleanup(() => { if (saveTimer) clearTimeout(saveTimer) })
+  // HYRON-CODE 0.9.2.9 - profiles: reaproveita o motor visual e a chave existente.
+  const applyAppearanceProfile = (raw: Record<string, unknown>) => {
+    const next = normalize(raw)
+    const serialized = JSON.stringify(next)
+    // Persist first; never change on-screen state if storage fails.
+    localStorage.setItem(KEY, serialized)
+    if (saveTimer) { clearTimeout(saveTimer); saveTimer = undefined }
+    setPrefs(next)
+    paint(next)
+    window.dispatchEvent(new Event("hyron-brand-change"))
+  }
   const update = (change: Partial<Prefs>) => {
     const next = normalize({ ...prefs(), ...change })
     setPrefs(next)
@@ -109,14 +142,52 @@ export function HyronPersonalization() {
     reader.onerror = () => setMessage("Falha na leitura da imagem.")
     reader.readAsDataURL(file)
   }
+  // HYRON-CODE 0.9.2: exportacao/importacao portatil de preferencias visuais.
+  const exportTheme = () => {
+    const payload = { format: "hyron-code-theme", version: 1, preferences: prefs() }
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = "HYRON-CODE-tema.json"
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
+    setMessage("Tema exportado. Guarde o arquivo em local seguro: ele pode conter imagens personalizadas.")
+  }
+  const importTheme = async (file?: File) => {
+    if (!file) return
+    if (file.size > 2_000_000) { setMessage("Arquivo muito grande. Limite: 2 MB."); return }
+    try {
+      const parsed: unknown = JSON.parse(await file.text())
+      if (!parsed || typeof parsed !== "object") throw new Error("formato")
+      const record = parsed as Record<string, unknown>
+      if (record.format !== "hyron-code-theme" || record.version !== 1) throw new Error("versao")
+      const raw = record.preferences
+      if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error("preferencias")
+      const candidate = raw as Record<string, unknown>
+      if (candidate.theme !== "hydra" && candidate.theme !== "dark" && candidate.theme !== "light") throw new Error("tema")
+      if (candidate.accent !== undefined && (typeof candidate.accent !== "string" || !/^#[a-fA-F0-9]{6}$/.test(candidate.accent))) throw new Error("cor")
+      const next = normalize(raw)
+      const serialized = JSON.stringify(next)
+      localStorage.setItem(KEY, serialized)
+      setPrefs(next)
+      paint(next)
+      window.dispatchEvent(new Event("hyron-brand-change"))
+      setMessage("Tema importado e salvo com sucesso.")
+    } catch {
+      setMessage("Tema invalido, incompativel ou sem espaco para salvar. Suas preferencias foram mantidas.")
+    }
+  }
   const exportLogo = () => {
     const p = prefs()
-    const svg = colorizeCobraSvg({ body: p.logoBody!, eyes: p.logoEyes!, stripes: p.logoStripes!, background: p.logoBackground! })
+    const svg = renderOrbitalLogo(p)
     const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" })
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.href = url
-    link.download = "HYRON-Code-logo.svg"
+    link.download = "HYRON-CODE-logo.svg"
     document.body.appendChild(link)
     link.click()
     link.remove()
@@ -124,6 +195,16 @@ export function HyronPersonalization() {
   }
   const colorField = (label: string, value: string, key: keyof Prefs) =>
     <label class="hyron-v11-color-field">{label}<input type="color" value={value} onInput={e => update({ [key]: e.currentTarget.value })}/></label>
+  const orbitalField = (label: string, key: "sphereTL" | "sphereTR" | "sphereBL" | "sphereBR" | "sphereCore" | "snakeEye", fallback: string) =>
+    <label class="hyron-v11-color-field">{label}
+      <input type="color" value={prefs()[key] ?? fallback} onInput={e => update({ [key]: e.currentTarget.value })} />
+      <button type="button" class="hyron-orbit-reset" onClick={() => update({ [key]: undefined })}>Usar cor original</button>
+    </label>
+  const hyron925RingField = (label: string, key: "hyronSnakeBody" | "hyronRingOne" | "hyronRingTwo" | "hyronRingThree", fallback: string) =>
+    <label class="hyron-v11-color-field">{label}
+      <input type="color" value={prefs()[key] ?? fallback} onInput={e => update({ [key]: e.currentTarget.value })} />
+      <button type="button" class="hyron-orbit-reset" onClick={() => update({ [key]: undefined })}>Usar cor original</button>
+    </label>
   return <section class="hyron-customizer" aria-label="Personalização visual HYRON Code">
     <div class="hyron-customizer__heading"><strong>Personalização HYRON Code</strong><span>Prévia e preferências locais; layout original preservado.</span></div>
     <div class="hyron-customizer__preview" style={{ "--hy-preview-bg": background(prefs()), "--hy-preview-surface": prefs().surface, "--hy-preview-accent": prefs().accent, "--hy-preview-icon": prefs().icon }}>
@@ -151,17 +232,37 @@ export function HyronPersonalization() {
         <input type="color" value={prefs().settingsColor ?? prefs().surface} onInput={e => update({ settingsColor: e.currentTarget.value })}/>
         <button type="button" style={{ display: "block", "margin-top": "6px", "font-size": "11px", "text-decoration": "underline", "text-align": "left" }} onClick={() => update({ settingsColor: undefined })}>Usar cor dos painéis</button>
       </label>
-      {colorField("Cor da logo", prefs().logoBody!, "logoBody")}
-      {colorField("Cor dos olhos", prefs().logoEyes!, "logoEyes")}
-      {colorField("Cor das listras", prefs().logoStripes!, "logoStripes")}
-      {colorField("Fundo da logo", prefs().logoBackground!, "logoBackground")}
     </div>
-    <p class="hyron-v11-note">A logo é um SVG: as cores mudam nos traços, mantendo a nitidez em qualquer tamanho.</p>
-    <div class="hyron-v11-brand-preview" aria-label="Prévia da logo HYRON Code">
-      <img alt="Cobra HYRON com as cores escolhidas" src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(colorizeCobraSvg({ body: prefs().logoBody!, eyes: prefs().logoEyes!, stripes: prefs().logoStripes!, background: prefs().logoBackground! }))}`} />
-      <strong>HYRON Code</strong>
+    <div class="hyron-v11-group-title"><strong>Cores da logo orbital</strong><span /></div>
+    <div class="hyron-v11-colors">
+      {orbitalField("Esfera superior esquerda", "sphereTL", "#ff3f8e")}
+      {orbitalField("Esfera superior direita", "sphereTR", "#8a57ff")}
+      {orbitalField("Esfera inferior esquerda", "sphereBL", "#ffb42d")}
+      {orbitalField("Esfera inferior direita", "sphereBR", "#378eff")}
+      {orbitalField("Nucleo central", "sphereCore", "#ff4370")}
+      {orbitalField("Olho da cobra", "snakeEye", "#ff35bf")}
     </div>
-    <div class="hyron-v11-logo-actions"><button type="button" onClick={exportLogo}>Baixar minha logo em SVG</button></div>
+    <p class="hyron-v11-note">Cores independentes para as esferas e o olho. Use cor original para manter a arte aprovada.</p>
+    <div class="hyron-v11-group-title"><strong>Corpo e aneis orbitais (experimental)</strong><span /></div>
+    <p class="hyron-v11-note">A alteracao usa camadas opcionais; cor original desativa a camada. Confira a previa antes de exportar.</p>
+    <div class="hyron-v11-colors">
+      {hyron925RingField("Corpo da cobra", "hyronSnakeBody", "#31ef91")}
+      {hyron925RingField("Anel orbital 1", "hyronRingOne", "#31e8c6")}
+      {hyron925RingField("Anel orbital 2", "hyronRingTwo", "#18baf5")}
+      {hyron925RingField("Anel orbital 3", "hyronRingThree", "#8f65ff")}
+    </div>
+    <div class="hyron-v11-brand-preview hyron-orbital-preview" aria-label="Prévia da logo HYRON-CODE">
+      <img alt="Logo orbital HYRON-CODE" src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(renderOrbitalLogo(prefs()))}`} />
+      <strong>HYRON-CODE</strong>
+    </div>    <div class="hyron-v11-logo-actions"><button type="button" onClick={exportLogo}>Baixar minha logo em SVG</button></div>
+    <div class="hyron-v11-group-title"><strong>Backup e compartilhamento de temas</strong><span /></div>
+    <div class="hyron-v11-logo-actions" style={{ display: "flex", gap: "12px", "flex-wrap": "wrap", "align-items": "center" }}>
+      <button type="button" onClick={exportTheme}>Exportar tema (JSON)</button>
+      <label style={{ display: "inline-flex", "align-items": "center", gap: "8px", cursor: "pointer" }}>Importar tema
+        <input type="file" accept=".json,application/json" onChange={e => { void importTheme(e.currentTarget.files?.[0]); e.currentTarget.value = "" }} />
+      </label>
+    </div>
+    <p class="hyron-v11-note">O arquivo exportado pode incluir imagens de fundo. Importe somente temas de origem confiavel.</p>
     <div class="hyron-v11-group-title"><strong>Fundo geral do aplicativo</strong><span /></div>
     <div class="hyron-customizer__controls">
       <label>Tipo de fundo <select value={prefs().background} onChange={e => update({ background: e.currentTarget.value as Background })}><option value="theme">Tema</option><option value="solid">Sólido</option><option value="gradient">Degradê</option><option value="image">Imagem</option></select></label>
@@ -195,6 +296,8 @@ export function HyronPersonalization() {
         <label>Cor do balão <input type="color" value={prefs().messageColor ?? "#253d35"} onInput={e => update({ messageColor: e.currentTarget.value })} /></label>
       </Show>
     </fieldset>
+    <HyronWatermarkSettings />
+    <HyronAppearanceProfiles getVisual={() => ({ ...prefs() })} applyVisual={applyAppearanceProfile} />
     <div class="hyron-customizer__footer"><button type="button" onClick={() => {update({...defaults, image:undefined});setMessage("Padrão Hydra restaurado.")}}>Restaurar padrão</button><small role="status">{message()}</small></div>
   </section>
 }

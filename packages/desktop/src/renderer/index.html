@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- data-sm lets the MetaProvider replace this pre-load title with the app's <Title> tags. -->
-    <title data-sm>HYRON Code</title>
+    <title data-sm>HYRON-CODE</title>
 <script>
   // HYRON_TITLE_RUNTIME_GUARD_V1116 - preserva nomes das sessoes e troca apenas a marca final.
   (() => {
@@ -12,7 +12,7 @@
       const title = document.querySelector('title')
       if (!title) return
       const original = title.textContent || ''
-      const changed = original.replace(/(^|[\sÂ·|â€”-])OpenCode\s*$/u, '$1HYRON Code')
+      const changed = original.replace(/(^|[\sÂ·|â€”-])OpenCode\s*$/u, '$1HYRON-CODE')
       if (changed !== original) title.textContent = changed
     }
     const start = () => {
