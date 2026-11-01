@@ -149,7 +149,7 @@ export function HyronPersonalization() {
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.href = url
-    link.download = "HYRON-CODE-tema.json"
+    link.download = "HYRONCODE-tema.json"
     document.body.appendChild(link)
     link.click()
     link.remove()
@@ -187,7 +187,7 @@ export function HyronPersonalization() {
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
     link.href = url
-    link.download = "HYRON-CODE-logo.svg"
+    link.download = "HYRONCODE-logo.svg"
     document.body.appendChild(link)
     link.click()
     link.remove()
@@ -251,9 +251,9 @@ export function HyronPersonalization() {
       {hyron925RingField("Anel orbital 2", "hyronRingTwo", "#18baf5")}
       {hyron925RingField("Anel orbital 3", "hyronRingThree", "#8f65ff")}
     </div>
-    <div class="hyron-v11-brand-preview hyron-orbital-preview" aria-label="Prévia da logo HYRON-CODE">
-      <img alt="Logo orbital HYRON-CODE" src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(renderOrbitalLogo(prefs()))}`} />
-      <strong>HYRON-CODE</strong>
+    <div class="hyron-v11-brand-preview hyron-orbital-preview" aria-label="Prévia da logo HYRONCODE">
+      <img alt="Logo orbital HYRONCODE" src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(renderOrbitalLogo(prefs()))}`} />
+      <strong>HYRONCODE</strong>
     </div>    <div class="hyron-v11-logo-actions"><button type="button" onClick={exportLogo}>Baixar minha logo em SVG</button></div>
     <div class="hyron-v11-group-title"><strong>Backup e compartilhamento de temas</strong><span /></div>
     <div class="hyron-v11-logo-actions" style={{ display: "flex", gap: "12px", "flex-wrap": "wrap", "align-items": "center" }}>

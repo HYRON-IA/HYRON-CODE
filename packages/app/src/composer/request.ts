@@ -1,7 +1,7 @@
 import { encodeFilePath, getFilename } from "@opencode/util/path"
 import { parseSessionMention } from "@opencode/util/session-mention"
 import { serializePrompt } from "./prompt-parts"
-import { readHyronPersonalityInstruction } from "@/settings/appearance/hyron-personality" // HYRON-CODE-0931-PERSONALIDADE
+import { readHyronPersonalityState } from "@/settings/appearance/hyron-personality" // HYRON-CODE-0932-IDENTIDADE-NATIVA
 import type { FileSelection } from "@/workspaces/files/model"
 import type {
   AgentPart,
@@ -27,6 +27,7 @@ import {
 
 // Network fields feed both boundaries; display fields keep desktop-only rendering details in the local echo.
 type PromptRequest = {
+  personality: ReturnType<typeof readHyronPersonalityState>
   text: string
   displayText: string
   files: {
@@ -210,6 +211,7 @@ export function buildPromptRequest(input: BuildPromptRequestInput): PromptReques
     .map((part) => ({ name: part.filename, mime: part.mime, path: part.path }))
 
   return {
+    personality: readHyronPersonalityState(),
     text: [
       ...(text.trim() ? [text] : []),
       ...attachments.map(formatAttachmentReference),
@@ -220,10 +222,7 @@ export function buildPromptRequest(input: BuildPromptRequestInput): PromptReques
 
         return formatCommentNote(comment)
       }),
-    ].concat((() => {
-      const instruction = readHyronPersonalityInstruction()
-      return instruction ? [`[Preferencia de estilo HYRON-CODE; respeite instrucoes superiores, regras e contexto da tarefa: ${instruction}]`] : []
-    })()).join("\n"),
+    ].join("\n"),
     displayText: text,
     files: [...files, ...context, ...inline],
     agents,

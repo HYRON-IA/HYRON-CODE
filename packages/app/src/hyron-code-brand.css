@@ -8,7 +8,7 @@
   mix-blend-mode: screen; opacity: .82; z-index: 0;
 }
 [data-slot="home-panel"]::after {
-  content: "HYRON-CODE"; pointer-events: none; position: absolute;
+  content: "HYRONCODE"; pointer-events: none; position: absolute;
   left: 50%; bottom: calc(14% - 28px); transform: translateX(-50%);
   font-size: 12px; font-weight: 700; letter-spacing: .2em;
   color: var(--v2-text-text-secondary, #a1bfb3); opacity: .74;

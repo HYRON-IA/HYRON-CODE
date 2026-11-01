@@ -1,0 +1,61 @@
+{
+  "release": "0.9.3.2.1",
+  "name": "HYRONCODE",
+  "files": [
+    {
+      "path": "packages/app/index.html",
+      "sha256Before": "7d33db0bb462ec63aed8fac535ce2ca3bb4096330c7dd749805eae4ebba182c4",
+      "sha256After": "a4d0c62a5fddf35547d48cd77a76b2703b85fbfb9f2f8fdc1e17db7c50d0bbf8"
+    },
+    {
+      "path": "packages/desktop/src/renderer/index.html",
+      "sha256Before": "03b5f1bcb84aa9232ca0271091b77e669ebb5e4c460e0e13519297285cb68e2f",
+      "sha256After": "9ab7254b77b2110116c4e1f91b0f424a1186f0ecd21c61c36932a831fcea01e5"
+    },
+    {
+      "path": "packages/desktop/src/main/constants.ts",
+      "sha256Before": "2f7d58830795c83f210b9ba5e0b2ffa0b66fe947672763e4b991fdb7a8f83db8",
+      "sha256After": "ce0cbb3339af18d017cee264773275939397b138edb55294edc544c5d03d3e0a"
+    },
+    {
+      "path": "packages/desktop/src/main/windows/early.ts",
+      "sha256Before": "ff9067a8629c8597c2413021ea3eda3cd1329d36d651b3653357ed826f77b9d4",
+      "sha256After": "4cd68708fc6dac1063f8a7f7520ecd427a8a4420e5680d2d1b8e2e38adbdfa3a"
+    },
+    {
+      "path": "packages/desktop/src/main/windows/appearance.ts",
+      "sha256Before": "1338ec7d39de1dd61bf9cbd77698766c0001c7f65e2e6d047bf9c5248457a4a2",
+      "sha256After": "c963c245887bbbf5484b8e29f95e5778f7f86fccbba554b6d6f1b4e2c1e70d8a"
+    },
+    {
+      "path": "packages/app/src/session/route.tsx",
+      "sha256Before": "f8fc79744d2000ceb8eec95e2c85eef3afb187946077a37e81ba6c873beeb49a",
+      "sha256After": "eb2b5f47799a5b5b55e9d939ec2ec41527b7739dc1259d552073957f901a5c2e"
+    },
+    {
+      "path": "packages/app/src/hyron-code-brand.css",
+      "sha256Before": "040465242291b8e4adc586a25dcd332fb1a7456837f97960e5ee2f5ec0594cce",
+      "sha256After": "200e2f047ffdee7950ff7c39feb60d2a372876c4abff448775de50ca70eb490f"
+    },
+    {
+      "path": "packages/app/src/settings/appearance/hyron-personalization.tsx",
+      "sha256Before": "eae8ce403aa1ab7aa692907b0479690ff970b9c71956298d8038b3810514526c",
+      "sha256After": "2692ea0f3fc2ca278bbf7196b1fa390adaa38a2c59dc68693832893c70b529dd"
+    },
+    {
+      "path": "packages/ui/src/components/logo.tsx",
+      "sha256Before": "8214e79a63296f92dc386d305841aaa8e85b748153c4b978e68af9de7d7ae41a",
+      "sha256After": "3a2ca97d84910ab7bae022e11b166fb59a95b76e99be7d80b19f674f9b6d21cd"
+    },
+    {
+      "path": "packages/app/src/settings/appearance/hyron-personality.tsx",
+      "sha256Before": "8440acd62f06807c5c68e1efe4f8e639a7a00984d067481456077b08c989eebf",
+      "sha256After": "943b43c8603167c3f34b2c7329513518f36b23ebc4e1b9c33583af9c4ab5fec1"
+    },
+    {
+      "path": "packages/core/src/session/hyron-personality.ts",
+      "sha256Before": "d80d693d0640c240bc5b466c0ae2000d2477ad06d07cfdf84cf140321f313d59",
+      "sha256After": "9f34e3fd951983f5afbd0cc6ca8b76b5012a777e27a7fb41a7762cee53266b38"
+    }
+  ]
+}

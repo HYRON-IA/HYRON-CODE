@@ -1,0 +1,17 @@
+{
+  "release": "0.9.3.3-hotfix-v2",
+  "brand": "HYRONCODE",
+  "created": "2026-10-30T18:18:12.435Z",
+  "files": [
+    {
+      "path": "packages/app/src/new-session/wordmark.tsx",
+      "before": "76a1c24b218d100595df970b1fac92d1468537efc2d5b6deed68a3d7f95b0121",
+      "after": "0ef94b889ebaa2b3b1b51d3f03149df5613107d8089aad13636c158d0bc1cdb1"
+    },
+    {
+      "path": "packages/app/src/new-session/pin-board.tsx",
+      "before": "bde18644cdab6fb878a4bcb644e99b147ab9138a6fef7a322587265a77d5fa45",
+      "after": "dbe4a3713820834ddb04fda66352ee844264e22362d3fe8701cd4412db50da51"
+    }
+  ]
+}

@@ -1,4 +1,6 @@
 import { Show, startTransition, Suspense, type ParentProps } from "solid-js"
+import { HyronToolsRail } from "@/shell/hyron-tools-rail"
+import { HyronPersonalityDrawer } from "@/shell/hyron-personality-drawer" // HYRONCODE-09361-RIGHT-PERSONALITY // HYRONCODE-0936-LEFT-TOOLS
 import { createStore } from "solid-js/store"
 import { createMediaQuery } from "@solid-primitives/media"
 import { ResizeHandle } from "@opencode/ui/resize-handle"
@@ -286,6 +288,8 @@ export default function Layout(props: ParentProps) {
             </Show>
           </aside>
         </Show>
+        <HyronToolsRail />
+        <HyronPersonalityDrawer />
         {/* Size containment collapses percentage-height descendants in WebKit. */}
         <main
           class="flex-1 min-h-0 min-w-0 overflow-x-hidden flex flex-col items-start contain-content"

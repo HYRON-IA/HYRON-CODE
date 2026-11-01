@@ -1,59 +1,19 @@
-import { Logo } from "@opencode/ui/logo"
 import { prefersReducedMotion } from "@opencode/ui/motion"
 import { For, onCleanup, onMount, Show } from "solid-js"
 import { PinSound } from "./pin-sound"
 import "./wordmark.css"
 
-// Each letter in the 234×42 logo viewBox, with its counter shadow, stem, and bottom-centre pivot.
+// HYRONCODE: wordmark orbital 9 letras; grade de 78x14 pinos.
 const LETTERS = [
-  {
-    cx: 12,
-    weak: "M18 30H6V18H18V30Z",
-    fill: "var(--icon-base)",
-    stem: "M18 12H6V30H18V12ZM24 36H0V6H24V36Z",
-  },
-  {
-    cx: 42,
-    weak: "M48 30H36V18H48V30Z",
-    fill: "var(--icon-base)",
-    stem: "M36 30H48V12H36V30ZM54 36H36V42H30V6H54V36Z",
-  },
-  {
-    cx: 72,
-    weak: "M84 24V30H66V24H84Z",
-    fill: "var(--icon-base)",
-    stem: "M84 24H66V30H84V36H60V6H84V24ZM66 18H78V12H66V18Z",
-  },
-  {
-    cx: 102,
-    weak: "M108 36H96V18H108V36Z",
-    fill: "var(--icon-base)",
-    stem: "M108 12H96V36H90V6H108V12ZM114 36H108V12H114V36Z",
-  },
-  {
-    cx: 132,
-    weak: "M144 30H126V18H144V30Z",
-    fill: "var(--icon-strong-base)",
-    stem: "M144 12H126V30H144V36H120V6H144V12Z",
-  },
-  {
-    cx: 162,
-    weak: "M168 30H156V18H168V30Z",
-    fill: "var(--icon-strong-base)",
-    stem: "M168 12H156V30H168V12ZM174 36H150V6H174V36Z",
-  },
-  {
-    cx: 192,
-    weak: "M198 30H186V18H198V30Z",
-    fill: "var(--icon-strong-base)",
-    stem: "M198 12H186V30H198V12ZM204 36H180V6H198V0H204V36Z",
-  },
-  {
-    cx: 222,
-    weak: "M234 24V30H216V24H234Z",
-    fill: "var(--icon-strong-base)",
-    stem: "M216 12V18H228V12H216ZM234 24H216V30H234V36H210V6H234V24Z",
-  },
+  { cx: 9, weak: "", stem: "M0 6h3v3h-3ZM3 6h3v3h-3ZM12 6h3v3h-3ZM15 6h3v3h-3ZM0 9h3v3h-3ZM3 9h3v3h-3ZM12 9h3v3h-3ZM15 9h3v3h-3ZM0 12h3v3h-3ZM3 12h3v3h-3ZM12 12h3v3h-3ZM15 12h3v3h-3ZM0 15h3v3h-3ZM3 15h3v3h-3ZM12 15h3v3h-3ZM15 15h3v3h-3ZM0 18h3v3h-3ZM3 18h3v3h-3ZM6 18h3v3h-3ZM9 18h3v3h-3ZM12 18h3v3h-3ZM15 18h3v3h-3ZM0 21h3v3h-3ZM3 21h3v3h-3ZM6 21h3v3h-3ZM9 21h3v3h-3ZM12 21h3v3h-3ZM15 21h3v3h-3ZM0 24h3v3h-3ZM3 24h3v3h-3ZM12 24h3v3h-3ZM15 24h3v3h-3ZM0 27h3v3h-3ZM3 27h3v3h-3ZM12 27h3v3h-3ZM15 27h3v3h-3ZM0 30h3v3h-3ZM3 30h3v3h-3ZM12 30h3v3h-3ZM15 30h3v3h-3ZM0 33h3v3h-3ZM3 33h3v3h-3ZM12 33h3v3h-3ZM15 33h3v3h-3Z", fill: "var(--icon-base)" }, // H
+  { cx: 36, weak: "", stem: "M27 6h3v3h-3ZM30 6h3v3h-3ZM39 6h3v3h-3ZM42 6h3v3h-3ZM27 9h3v3h-3ZM30 9h3v3h-3ZM39 9h3v3h-3ZM42 9h3v3h-3ZM27 12h3v3h-3ZM30 12h3v3h-3ZM39 12h3v3h-3ZM42 12h3v3h-3ZM30 15h3v3h-3ZM33 15h3v3h-3ZM36 15h3v3h-3ZM39 15h3v3h-3ZM33 18h3v3h-3ZM36 18h3v3h-3ZM33 21h3v3h-3ZM36 21h3v3h-3ZM33 24h3v3h-3ZM36 24h3v3h-3ZM33 27h3v3h-3ZM36 27h3v3h-3ZM33 30h3v3h-3ZM36 30h3v3h-3ZM33 33h3v3h-3ZM36 33h3v3h-3Z", fill: "var(--icon-base)" }, // Y
+  { cx: 63, weak: "M60 9h3v3h-3ZM63 9h3v3h-3ZM60 12h3v3h-3ZM63 12h3v3h-3ZM60 15h3v3h-3ZM63 15h3v3h-3ZM60 27h3v3h-3ZM63 27h3v3h-3ZM60 30h3v3h-3ZM63 30h3v3h-3Z", stem: "M54 6h3v3h-3ZM57 6h3v3h-3ZM60 6h3v3h-3ZM63 6h3v3h-3ZM66 6h3v3h-3ZM54 9h3v3h-3ZM57 9h3v3h-3ZM66 9h3v3h-3ZM69 9h3v3h-3ZM54 12h3v3h-3ZM57 12h3v3h-3ZM66 12h3v3h-3ZM69 12h3v3h-3ZM54 15h3v3h-3ZM57 15h3v3h-3ZM66 15h3v3h-3ZM69 15h3v3h-3ZM54 18h3v3h-3ZM57 18h3v3h-3ZM60 18h3v3h-3ZM63 18h3v3h-3ZM66 18h3v3h-3ZM54 21h3v3h-3ZM57 21h3v3h-3ZM60 21h3v3h-3ZM63 21h3v3h-3ZM54 24h3v3h-3ZM57 24h3v3h-3ZM63 24h3v3h-3ZM66 24h3v3h-3ZM54 27h3v3h-3ZM57 27h3v3h-3ZM66 27h3v3h-3ZM69 27h3v3h-3ZM54 30h3v3h-3ZM57 30h3v3h-3ZM66 30h3v3h-3ZM69 30h3v3h-3ZM54 33h3v3h-3ZM57 33h3v3h-3ZM66 33h3v3h-3ZM69 33h3v3h-3Z", fill: "var(--icon-base)" }, // R
+  { cx: 90, weak: "M87 9h3v3h-3ZM90 9h3v3h-3ZM87 12h3v3h-3ZM90 12h3v3h-3ZM87 15h3v3h-3ZM90 15h3v3h-3ZM87 18h3v3h-3ZM90 18h3v3h-3ZM87 21h3v3h-3ZM90 21h3v3h-3ZM87 24h3v3h-3ZM90 24h3v3h-3ZM87 27h3v3h-3ZM90 27h3v3h-3ZM87 30h3v3h-3ZM90 30h3v3h-3Z", stem: "M84 6h3v3h-3ZM87 6h3v3h-3ZM90 6h3v3h-3ZM93 6h3v3h-3ZM81 9h3v3h-3ZM84 9h3v3h-3ZM93 9h3v3h-3ZM96 9h3v3h-3ZM81 12h3v3h-3ZM84 12h3v3h-3ZM93 12h3v3h-3ZM96 12h3v3h-3ZM81 15h3v3h-3ZM84 15h3v3h-3ZM93 15h3v3h-3ZM96 15h3v3h-3ZM81 18h3v3h-3ZM84 18h3v3h-3ZM93 18h3v3h-3ZM96 18h3v3h-3ZM81 21h3v3h-3ZM84 21h3v3h-3ZM93 21h3v3h-3ZM96 21h3v3h-3ZM81 24h3v3h-3ZM84 24h3v3h-3ZM93 24h3v3h-3ZM96 24h3v3h-3ZM81 27h3v3h-3ZM84 27h3v3h-3ZM93 27h3v3h-3ZM96 27h3v3h-3ZM81 30h3v3h-3ZM84 30h3v3h-3ZM93 30h3v3h-3ZM96 30h3v3h-3ZM84 33h3v3h-3ZM87 33h3v3h-3ZM90 33h3v3h-3ZM93 33h3v3h-3Z", fill: "var(--icon-base)" }, // O
+  { cx: 117, weak: "", stem: "M108 6h3v3h-3ZM111 6h3v3h-3ZM120 6h3v3h-3ZM123 6h3v3h-3ZM108 9h3v3h-3ZM111 9h3v3h-3ZM114 9h3v3h-3ZM120 9h3v3h-3ZM123 9h3v3h-3ZM108 12h3v3h-3ZM111 12h3v3h-3ZM114 12h3v3h-3ZM120 12h3v3h-3ZM123 12h3v3h-3ZM108 15h3v3h-3ZM111 15h3v3h-3ZM114 15h3v3h-3ZM117 15h3v3h-3ZM120 15h3v3h-3ZM123 15h3v3h-3ZM108 18h3v3h-3ZM111 18h3v3h-3ZM117 18h3v3h-3ZM120 18h3v3h-3ZM123 18h3v3h-3ZM108 21h3v3h-3ZM111 21h3v3h-3ZM117 21h3v3h-3ZM120 21h3v3h-3ZM123 21h3v3h-3ZM108 24h3v3h-3ZM111 24h3v3h-3ZM120 24h3v3h-3ZM123 24h3v3h-3ZM108 27h3v3h-3ZM111 27h3v3h-3ZM120 27h3v3h-3ZM123 27h3v3h-3ZM108 30h3v3h-3ZM111 30h3v3h-3ZM120 30h3v3h-3ZM123 30h3v3h-3ZM108 33h3v3h-3ZM111 33h3v3h-3ZM120 33h3v3h-3ZM123 33h3v3h-3Z", fill: "var(--icon-base)" }, // N
+  { cx: 144, weak: "", stem: "M138 6h3v3h-3ZM141 6h3v3h-3ZM144 6h3v3h-3ZM147 6h3v3h-3ZM150 6h3v3h-3ZM135 9h3v3h-3ZM138 9h3v3h-3ZM135 12h3v3h-3ZM138 12h3v3h-3ZM135 15h3v3h-3ZM138 15h3v3h-3ZM135 18h3v3h-3ZM138 18h3v3h-3ZM135 21h3v3h-3ZM138 21h3v3h-3ZM135 24h3v3h-3ZM138 24h3v3h-3ZM135 27h3v3h-3ZM138 27h3v3h-3ZM135 30h3v3h-3ZM138 30h3v3h-3ZM138 33h3v3h-3ZM141 33h3v3h-3ZM144 33h3v3h-3ZM147 33h3v3h-3ZM150 33h3v3h-3Z", fill: "var(--icon-strong-base)" }, // C
+  { cx: 171, weak: "M168 9h3v3h-3ZM171 9h3v3h-3ZM168 12h3v3h-3ZM171 12h3v3h-3ZM168 15h3v3h-3ZM171 15h3v3h-3ZM168 18h3v3h-3ZM171 18h3v3h-3ZM168 21h3v3h-3ZM171 21h3v3h-3ZM168 24h3v3h-3ZM171 24h3v3h-3ZM168 27h3v3h-3ZM171 27h3v3h-3ZM168 30h3v3h-3ZM171 30h3v3h-3Z", stem: "M165 6h3v3h-3ZM168 6h3v3h-3ZM171 6h3v3h-3ZM174 6h3v3h-3ZM162 9h3v3h-3ZM165 9h3v3h-3ZM174 9h3v3h-3ZM177 9h3v3h-3ZM162 12h3v3h-3ZM165 12h3v3h-3ZM174 12h3v3h-3ZM177 12h3v3h-3ZM162 15h3v3h-3ZM165 15h3v3h-3ZM174 15h3v3h-3ZM177 15h3v3h-3ZM162 18h3v3h-3ZM165 18h3v3h-3ZM174 18h3v3h-3ZM177 18h3v3h-3ZM162 21h3v3h-3ZM165 21h3v3h-3ZM174 21h3v3h-3ZM177 21h3v3h-3ZM162 24h3v3h-3ZM165 24h3v3h-3ZM174 24h3v3h-3ZM177 24h3v3h-3ZM162 27h3v3h-3ZM165 27h3v3h-3ZM174 27h3v3h-3ZM177 27h3v3h-3ZM162 30h3v3h-3ZM165 30h3v3h-3ZM174 30h3v3h-3ZM177 30h3v3h-3ZM165 33h3v3h-3ZM168 33h3v3h-3ZM171 33h3v3h-3ZM174 33h3v3h-3Z", fill: "var(--icon-strong-base)" }, // O
+  { cx: 198, weak: "M195 9h3v3h-3ZM198 9h3v3h-3ZM195 12h3v3h-3ZM198 12h3v3h-3ZM195 15h3v3h-3ZM198 15h3v3h-3ZM195 18h3v3h-3ZM198 18h3v3h-3ZM195 21h3v3h-3ZM198 21h3v3h-3ZM195 24h3v3h-3ZM198 24h3v3h-3ZM195 27h3v3h-3ZM198 27h3v3h-3ZM195 30h3v3h-3ZM198 30h3v3h-3Z", stem: "M189 6h3v3h-3ZM192 6h3v3h-3ZM195 6h3v3h-3ZM198 6h3v3h-3ZM189 9h3v3h-3ZM192 9h3v3h-3ZM201 9h3v3h-3ZM204 9h3v3h-3ZM189 12h3v3h-3ZM192 12h3v3h-3ZM201 12h3v3h-3ZM204 12h3v3h-3ZM189 15h3v3h-3ZM192 15h3v3h-3ZM201 15h3v3h-3ZM204 15h3v3h-3ZM189 18h3v3h-3ZM192 18h3v3h-3ZM201 18h3v3h-3ZM204 18h3v3h-3ZM189 21h3v3h-3ZM192 21h3v3h-3ZM201 21h3v3h-3ZM204 21h3v3h-3ZM189 24h3v3h-3ZM192 24h3v3h-3ZM201 24h3v3h-3ZM204 24h3v3h-3ZM189 27h3v3h-3ZM192 27h3v3h-3ZM201 27h3v3h-3ZM204 27h3v3h-3ZM189 30h3v3h-3ZM192 30h3v3h-3ZM201 30h3v3h-3ZM204 30h3v3h-3ZM189 33h3v3h-3ZM192 33h3v3h-3ZM195 33h3v3h-3ZM198 33h3v3h-3Z", fill: "var(--icon-strong-base)" }, // D
+  { cx: 225, weak: "", stem: "M216 6h3v3h-3ZM219 6h3v3h-3ZM222 6h3v3h-3ZM225 6h3v3h-3ZM228 6h3v3h-3ZM231 6h3v3h-3ZM216 9h3v3h-3ZM219 9h3v3h-3ZM216 12h3v3h-3ZM219 12h3v3h-3ZM216 15h3v3h-3ZM219 15h3v3h-3ZM216 18h3v3h-3ZM219 18h3v3h-3ZM222 18h3v3h-3ZM225 18h3v3h-3ZM228 18h3v3h-3ZM216 21h3v3h-3ZM219 21h3v3h-3ZM222 21h3v3h-3ZM225 21h3v3h-3ZM228 21h3v3h-3ZM216 24h3v3h-3ZM219 24h3v3h-3ZM216 27h3v3h-3ZM219 27h3v3h-3ZM216 30h3v3h-3ZM219 30h3v3h-3ZM216 33h3v3h-3ZM219 33h3v3h-3ZM222 33h3v3h-3ZM225 33h3v3h-3ZM228 33h3v3h-3ZM231 33h3v3h-3Z", fill: "var(--icon-strong-base)" }, // E
 ] as const
 
 // Lodger geometry, in the logo's 234×42 viewBox units. The lodger is drawn from its bottom centre.
@@ -204,7 +164,7 @@ function WordmarkLodger(props: {
                   <path d={item.weak} fill="var(--icon-weak-base)" />
                   <path d={item.stem} fill={item.fill} />
                 </g>
-                <Show when={i() === 7}>
+                <Show when={i() === 8}>
                   <rect
                     ref={notch}
                     x="224.6"
@@ -219,7 +179,9 @@ function WordmarkLodger(props: {
             )}
           </For>
         </svg>
-        <Logo class="wordmark-shimmer absolute inset-0 size-full" />
+        <svg viewBox="0 0 234 42" fill="none" aria-hidden="true" class="wordmark-shimmer absolute inset-0 size-full">
+          <For each={LETTERS}>{(letter) => <path d={letter.stem} fill="white" />}</For>
+        </svg>
       </div>
       <svg
         ref={svg}
@@ -409,10 +371,10 @@ function mountLodger(
     c.pinY = lerp(PIN_SLOT.y, c.y - 11, clamp01(out / 7))
     c.pinRot = (c.x - REST.x) * 2.5
     c.pinScale = 1 + stress * 0.35
-    poses[7].x = (c.x - REST.x) * 0.12
-    poses[7].y = (c.y - REST.y) * 0.12
-    poses[7].sx = 1 + stress * 0.05
-    poses[7].sy = 1 + stress * 0.05
+    poses[8].x = (c.x - REST.x) * 0.12
+    poses[8].y = (c.y - REST.y) * 0.12
+    poses[8].sx = 1 + stress * 0.05
+    poses[8].sy = 1 + stress * 0.05
   }
 
   const snapIn = (dt: number) => {
@@ -511,7 +473,7 @@ function mountLodger(
     c.pinOpacity = t < 1.35 ? 1 : 0
 
     poses.forEach((p, i) => {
-      const start = (7 - i) * 0.08
+      const start = (8 - i) * 0.08
       const u = seg(t, start, start + 0.28)
       p.opacity = 1 - u
       p.x = 0
@@ -722,7 +684,7 @@ function mountLodger(
     if (t >= 1.2) return restHidden()
 
     poses.forEach((p, i) => {
-      const start = 0.32 + (i / 7) * 0.48
+      const start = 0.32 + (i / 8) * 0.48
       const u = seg(t, start, start + 0.32)
       p.opacity = u
       p.x = 0

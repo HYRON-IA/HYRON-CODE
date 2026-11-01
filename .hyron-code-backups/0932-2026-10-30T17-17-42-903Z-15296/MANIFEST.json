@@ -1,0 +1,31 @@
+{
+  "version": "0.9.3.2",
+  "createdAt": "2026-10-30T17:17:42.920Z",
+  "files": [
+    {
+      "path": "packages/app/src/settings/appearance/hyron-personality.tsx",
+      "previous": "2eaee8dc19108b742a85fca8f7ffc0c045e6f08544cfe6f715515ee4c0e2dd82",
+      "after": "8440acd62f06807c5c68e1efe4f8e639a7a00984d067481456077b08c989eebf"
+    },
+    {
+      "path": "packages/app/src/composer/request.ts",
+      "previous": "7890f840c786888a7195ff3965a631515f826abcacd7d815831c0c5568cde237",
+      "after": "f61afe783f0a792dbad3c870606670555838aae432a2c66ba9f86e2b39273fd6"
+    },
+    {
+      "path": "packages/app/src/composer/submit.ts",
+      "previous": "3ce61699aad3efd76a471dd5ca03c6797a6f36e0b42d69919c810c17a76ccad1",
+      "after": "705a55f6049854cfdb3ba1cd6c92739be9f32c5f0708fb42935b574990dfba4e"
+    },
+    {
+      "path": "packages/core/src/session/model-request.ts",
+      "previous": "e5377f86b129438ca587869b19b166a29ab7556ee577994bded107ceb5dfff34",
+      "after": "87a75e01c86a818342203db3f3a4c009e84e37ccce691eae449463447d848a29"
+    },
+    {
+      "path": "packages/core/src/session/hyron-personality.ts",
+      "previous": null,
+      "after": "d80d693d0640c240bc5b466c0ae2000d2477ad06d07cfdf84cf140321f313d59"
+    }
+  ]
+}

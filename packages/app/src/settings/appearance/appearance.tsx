@@ -1,6 +1,6 @@
-import { Component, Show } from "solid-js"
+import { Component, Show } from "solid-js" // HYRONCODE-0936-LEFT-TOOLS
 import { HyronPersonalization } from "./hyron-personalization"
-import { HyronPersonalitySettings } from "./hyron-personality" // HYRON-CODE-0931-PERSONALIDADE
+import { HyronPersonalitySettings, HyronPersonalityStudio } from "./hyron-personality" // HYRON-CODE-0931-PERSONALIDADE
 import { Select } from "@opencode/ui/select"
 import { TextInput } from "@opencode/ui/text-input"
 import { useLanguage } from "@/runtime/i18n/language"
@@ -134,7 +134,18 @@ export const SettingsAppearance: Component = () => {
             </SettingsRow>
 
             <HyronPersonalization />
-            <HyronPersonalitySettings />
+            <div id="hyroncode-personality-shortcut" ref={(element) => {
+              queueMicrotask(() => {
+                try {
+                  if (sessionStorage.getItem("hyroncode.tools.focus") !== "personality") return
+                  sessionStorage.removeItem("hyroncode.tools.focus")
+                  requestAnimationFrame(() => element.scrollIntoView({ behavior: "smooth", block: "start" }))
+                } catch { /* optional browser storage */ }
+              })
+            }}>
+              <HyronPersonalitySettings />
+            </div>
+            <HyronPersonalityStudio />
 
             <FontSetting kind="ui" fonts={appearance.fonts} />
             <FontSetting kind="code" fonts={appearance.fonts} />

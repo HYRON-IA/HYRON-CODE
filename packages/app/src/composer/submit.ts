@@ -615,6 +615,7 @@ async function sendPrompt(
     agents: request.agents,
     skills: request.skills,
     metadata: {
+      hyronPersonality: request.personality,
       displayText: request.displayText,
       comments: request.comments,
       attachments: request.attachments,

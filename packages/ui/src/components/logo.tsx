@@ -28,6 +28,6 @@ export const Logo = (props: { class?: string }) => {
   const src = useCobra()
   return <svg data-component="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234 42" fill="none" classList={{ [props.class ?? ""]: !!props.class }}>
     <image href={src()} x="0" y="0" width="42" height="42" preserveAspectRatio="xMidYMid meet" />
-    <text x="50" y="28" font-size="24" font-family="system-ui, sans-serif" font-weight="700" fill="var(--icon-strong-base, currentColor)">HYRON-CODE</text>
+    <text x="50" y="28" font-size="24" font-family="system-ui, sans-serif" font-weight="700" fill="var(--icon-strong-base, currentColor)">HYRONCODE</text>
   </svg>
 }

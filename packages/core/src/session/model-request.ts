@@ -36,6 +36,7 @@ import { SessionModelTransport } from "./model-transport.js"
 import { SessionRunnerModel } from "./runner/model.js"
 import { SessionSchema } from "./schema.js"
 import { SessionSystemPrompt } from "./system-prompt.js"
+import { systemInstruction as hyronSystemInstruction } from "./hyron-personality.js"
 import { toLLMMessages } from "./runner/to-llm-message.js"
 import type { SessionMessage } from "./message.js"
 
@@ -104,6 +105,7 @@ export const baseTranscript = (input: {
   readonly messages: ReadonlyArray<SessionMessage.Info>
 }) => {
   const providerMetadataKey = input.model.model.route.providerMetadataKey ?? input.model.model.provider
+  const hyronPersonality = hyronSystemInstruction(input.messages)
   return {
     providerMetadataKey,
     system: [
@@ -111,8 +113,9 @@ export const baseTranscript = (input: {
         ? input.agent.system
         : SessionSystemPrompt.make(input.tools.definitions.map((tool) => tool.name)),
       input.initial,
+      hyronPersonality,
     ]
-      .filter((part) => part.length > 0)
+      .filter((part): part is string => typeof part === "string" && part.length > 0)
       .map(SystemPart.make),
     messages: toLLMMessages(input.messages, input.model.ref, providerMetadataKey),
   }
