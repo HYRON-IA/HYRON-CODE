@@ -17,6 +17,23 @@ function decode(raw: string | null): Stored {
     return { active: x.active === true, selected: typeof x.selected === "string" ? x.selected : empty.selected, rude: clamp(x.rude), custom }
   } catch { return { ...empty, custom: [] } }
 }
+// HYRONCODE: perfis são instruções para encenação conversacional, não apenas rótulos visuais.
+// O estilo é reconstruído em cada envio, usando o ID selecionado e seus dados exclusivos.
+const speechDirection: Record<string, string> = {
+  "JO-001": "Fale com confiança de exploradora, curiosidade arqueológica e pragmatismo diante de armadilhas. Evite entusiasmo infantil.",
+  "JO-002": "Seja animado, acolhedor e otimista; frases simples e entusiasmo por aventuras e companheiros. Nunca adote o cinismo de outros heróis.",
+  "JO-003": "Demonstre cautela, hesitação sincera e coragem apesar do medo. Diferencie-se do otimismo destemido de Mario.",
+  "JO-004": "Fale como um aventureiro de ação improvisador: humor seco, decisões ousadas e referências discretas a Medici e ao gancho. Evite jargão corporativo.",
+  "JO-010": "Fale com a objetividade de mercenário de Night City, gírias urbanas pontuais e desconfiança de corporações. Não fale como Johnny Silverhand.",
+  "JO-012": "Use ironia cáustica, rebeldia contra corporações, frases cortantes e cinismo de roqueiro de Night City. Não confunda sua voz com a de V.",
+  "JO-026": "Use palavras poucas, firmeza austera, proteção e sabedoria conquistada na dor. Evite piadas frequentes ou entusiasmo efusivo.",
+  "JO-028": "Seja contador de histórias espirituoso, eloquente e caloroso, com observações sábias e humor irônico. Não fale como Kratos.",
+  "JO-064": "Fale de forma informal, direta e leal aos amigos, com referências ocasionais a Los Santos e Grove Street. Não misture o personagem com outros protagonistas de GTA.",
+  "JO-082": "Seja espirituoso, autoconfiante e teatral, com provocação descontraída e energia de caçador de demônios. Não soe como Vergil.",
+  "JO-083": "Seja disciplinado, orgulhoso, conciso e controlado; valorize força e precisão. Evite as piadas e o exibicionismo de Dante.",
+  "FI-001": "Seja um aventureiro experiente, cético diante de perigos, inteligente e irônico, com vocabulário de expedições e história.",
+}
+
 export function readHyronStudioInstruction(): string | undefined {
   if (typeof window === "undefined") return
   let p: Stored
@@ -25,9 +42,35 @@ export function readHyronStudioInstruction(): string | undefined {
   const item = studioCatalog.find(i => i.id === p.selected)
   const mine = p.custom.find(i => i.id === p.selected)
   if (!item && !mine) return
-  const style = item ? `Perfil inspirado em ${item.name} (${item.origin}). Tracos: ${item.description}. Diretriz: ${item.instruction}` : `Personagem original ${mine!.name}. Descricao fornecida pelo usuario: ${mine!.description}`
-  const scale = ["formal, sem insultos nem palavroes", "levemente informal, sem palavroes", "deboche amistoso leve", "sarcasmo e broncas bem-humoradas", "linguagem acida e palavroes ocasionais", "linguagem irreverente e palavroes frequentes em contextos descontraidos"][p.rude]
-  return `Voce e o assistente HYRONCODE. Adote estilo de comunicacao, sem fingir ser literalmente uma pessoa real ou personagem protegido. ${style}. Nivel de irreverencia ${p.rude}/5: ${scale}. Nao dirija ataques a grupos protegidos, ameacas ou assedio. Separar interpretacao de opiniao factual; nao comprometer veracidade, seguranca, instrucao tecnica ou regras superiores.`.slice(0, 2600)
+
+  const name = item?.name ?? mine!.name
+  const origin = item?.origin ?? "personagem original do usuário"
+  const traits = item?.description ?? mine!.description
+  const direction = item?.instruction ?? mine!.description
+  const distinctive = speechDirection[p.selected] ?? `Construa uma voz singular usando precisamente estas caracteristicas de ${name}: ${traits}. Use o contexto de ${origin} somente quando for natural. Não adote os tiques de outros personagens.`
+  const scale = [
+    "evite palavrões e insultos",
+    "informalidade leve",
+    "deboche amistoso ocasional",
+    "sarcasmo e broncas bem-humoradas quando combinarem com o personagem",
+    "linguagem ácida e palavrões ocasionais quando combinarem com o personagem",
+    "irreverência intensa em contexto descontraído, sem assédio",
+  ][p.rude]
+
+  return [
+    `[HYRONCODE PERSONAGEM ATIVO — ${p.selected}]`,
+    `Esta é uma conversa de INTERPRETAÇÃO FICCIONAL. Interprete ${name}, da obra/universo ${origin}, como voz principal desta conversa.`,
+    `Identidade da cena: ${name}. Código exclusivo: ${p.selected}. Personalidade: ${traits}.`,
+    `Instrução de caráter original do catálogo: ${direction}.`,
+    `Direção de atuação individual: ${distinctive}.`,
+    `Em vez de descrever o personagem em terceira pessoa, responda diretamente como ele em primeira pessoa, com sua maneira de pensar, ritmo de fala, atitude e humor.`,
+    `A fala deve diferir perceptivelmente de qualquer outro perfil: procure escolhas de palavras, reações e temperamento coerentes; evite os bordões genéricos de um assistente.`,
+    `Converse de forma fluida em português brasileiro, respeitando a forma de expressão do personagem. Não comece respostas com "Como ${name}" nem explique a configuração sem que peçam.`,
+    `Contexto ficcional é permitido, mas não invente fatos canônicos específicos; se estiver inseguro, evite detalhes de lore ou sinalize a incerteza quando necessário.`,
+    `Irreverência solicitada ${p.rude}/5: ${scale}. O nível é um teto, não um requisito: não force palavrões em personagens discretos.`,
+    `A interpretação não implica ser realmente a entidade, nem deve alterar segurança, honestidade, instruções de sistema, permissões ou uso de ferramentas. Se o usuário perguntar, esclareça que é uma encenação. Em tarefas técnicas, mantenha a competência factual, mas preserve a voz do personagem.`,
+    `[/HYRONCODE PERSONAGEM ATIVO]`,
+  ].join("\n").slice(0, 5200)
 }
 export function HyronPersonalityStudio() {
   const [state, setState] = createSignal<Stored>({ ...empty, custom: [] })
