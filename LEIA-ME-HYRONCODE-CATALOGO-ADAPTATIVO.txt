@@ -1,0 +1,59 @@
+HYRONCODE — CATÁLOGO ADAPTATIVO (patch da versão dev 7)
+======================================================
+
+Esta versão altera o catálogo visual existente sem remover personagens, personalidades,
+cores, chat ou ajustes anteriores.
+
+NOVIDADES
+- 650 perfis encontrados no catálogo do ZIP original: 300 JO, 100 FI, 100 AN,
+  100 SÉ e 50 arquétipos AR. Até 100 perfis próprios continuam disponíveis.
+- Blocos com retrato aparecem primeiro; cartões sem retrato ficam abaixo e
+  NÃO reservam espaço para imagem.
+- Cada cartão mostra código, nome, obra, descrição resumida e ações.
+- Busca por código/nome/obra, filtros, favoritos, 24 cartões por página.
+- Upload de PNG/JPG/WebP (até 15 MB), sem cortes, com miniatura proporcional.
+- Importação de múltiplos retratos: arquivos devem ter código como nome,
+  por exemplo JO-573.png, FI-001.jpg ou SÉ-005.webp.
+- Trocar/remover imagens nos detalhes ou adicionar diretamente no cartão.
+- Download do original para imagens adicionadas pelo usuário.
+- Imagens novas ficam no IndexedDB do navegador/aplicativo (armazenamento local).
+- Retratos antigos salvos por URL/localStorage e imagens do manifest.json são
+  preservados. A remoção esconde também os retratos fornecidos no projeto.
+- Acesso via Configurações > Aparência > "Catálogo adaptativo de personagens"
+  e pelo painel lateral de Personalidade > "Catálogo adaptativo".
+- Seleção do personagem continua utilizando hyroncode-studio-personality-v1;
+  as mensagens futuras continuam seguindo o mesmo mecanismo de personalidade.
+
+AVISOS
+- Os retratos importados pela interface permanecem no MESMO PERFIL local
+  (IndexedDB). Limpar os dados do app, trocar de instalação/perfil/origem ou
+  desinstalar sem preservar o perfil pode apagar os uploads. Baixe os originais
+  ou mantenha cópias externas; para distribuição a outros computadores, importe
+  as fotos à parte ou use IMPORTAR-RETRATOS.bat existente no projeto.
+- A pesquisa NÃO baixa imagens automaticamente nem transforma nomes em retratos.
+- Um link HTTPS pode parar de funcionar; prefira importar um arquivo local.
+- Não foram incluídas automaticamente as fotos escolhidas em outras conversas.
+- Os arquivos-fonte TSX/TS/CSS foram verificados por compilação sintática
+  TypeScript (sem erros); build completo não foi executado nesta sessão, pois
+  as dependências Bun/Node do projeto não estão instaladas aqui.
+
+ARQUIVOS ALTERADOS
+packages/app/src/settings/appearance/appearance.tsx
+packages/app/src/shell/hyron-personality-drawer.tsx
+packages/app/src/shell/hyron-visual-catalog.tsx
+
+ARQUIVOS NOVOS
+packages/app/src/shell/hyron-portrait-store.ts
+packages/app/src/shell/hyron-visual-catalog.css
+
+TESTE LOCAL (se Bun estiver instalado)
+1. Abra PowerShell na raiz do projeto.
+2. Se necessário: bun install
+3. Execute: bun run --cwd packages/app typecheck
+4. Execute: bun run dev:web
+5. Em Aparência, abra o catálogo adaptativo.
+6. Anexe uma imagem a um cartão e confirme sua mudança para o grupo superior.
+7. Remova e confira o retorno ao grupo inferior; feche e reabra o app e confira.
+
+O pacote FULL contém a árvore inteira do ZIP dev(7) com as cinco alterações.
+O pacote PATCH contém somente arquivos alterados e um instalador PowerShell com backup.

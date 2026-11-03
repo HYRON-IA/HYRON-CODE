@@ -23,7 +23,7 @@ export function HyronPersonalityDrawer() {
           <button type="button" onClick={() => setOpen(false)} aria-label="Fechar painel de personalidade" class="rounded-md px-3 py-2 hover:bg-v2-background-bg-hover">✕</button>
         </header>
         <div class="px-5 py-3 border-b border-v2-border-base">
-          <button type="button" class="w-full rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-medium py-3" onClick={() => setCatalog(true)}>▦ Explorar catálogo visual · 3 × 5</button>
+          <button type="button" class="w-full rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-medium py-3" onClick={() => setCatalog(true)}>▦ Catálogo adaptativo · fotos primeiro / nomes no final</button>
         </div>
         <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 py-4 [&_input]:select-text [&_textarea]:select-text">
           <HyronPersonalitySettings />

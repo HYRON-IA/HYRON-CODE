@@ -1,5 +1,6 @@
-import { Component, Show } from "solid-js" // HYRONCODE-0936-LEFT-TOOLS
+import { Component, Show, createSignal } from "solid-js" // HYRONCODE-0936-LEFT-TOOLS
 import { HyronPersonalization } from "./hyron-personalization"
+import { HyronVisualCatalog } from "@/shell/hyron-visual-catalog"
 import { HyronPersonalitySettings, HyronPersonalityStudio } from "./hyron-personality" // HYRON-CODE-0931-PERSONALIDADE
 import { Select } from "@opencode/ui/select"
 import { TextInput } from "@opencode/ui/text-input"
@@ -74,6 +75,7 @@ const FontSetting: Component<{
 export const SettingsAppearance: Component = () => {
   const language = useLanguage()
   const appearance = createAppearanceSettingsController()
+  const [characterCatalogOpen, setCharacterCatalogOpen] = createSignal(false)
 
   return (
     <>
@@ -134,6 +136,11 @@ export const SettingsAppearance: Component = () => {
             </SettingsRow>
 
             <HyronPersonalization />
+            <button type="button" class="hyron-appearance-catalog-launch" onClick={() => setCharacterCatalogOpen(true)}>
+              <span><strong>▦ Catálogo adaptativo de personagens</strong><span style={{ display: "block", "margin-top": "4px" }}>Com imagem primeiro · Sem imagem em cartões compactos · Adicione ou remova retratos</span></span>
+              <span>Abrir →</span>
+            </button>
+            <Show when={characterCatalogOpen()}><HyronVisualCatalog onClose={() => setCharacterCatalogOpen(false)} /></Show>
             <div id="hyroncode-personality-shortcut" ref={(element) => {
               queueMicrotask(() => {
                 try {
