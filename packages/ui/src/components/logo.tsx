@@ -1,11 +1,29 @@
 import { createSignal, onCleanup, onMount, type ComponentProps } from "solid-js"
-import { HYRON_CODE_MARK } from "./hyron-code-official-mark"
+import { renderOrbitalLogo, type OrbitalColors } from "./hyron-orbital-colors"
+
+const APPEARANCE_KEY = "hyron_code_appearance_v091"
+let previousSettings = ""
+let cachedSrc = ""
+
+function dynamicLogo() {
+  let serialized = ""
+  try { serialized = localStorage.getItem(APPEARANCE_KEY) ?? "" } catch { /* private-mode storage */ }
+  if (cachedSrc && serialized === previousSettings) return cachedSrc
+  let preferences: OrbitalColors = {}
+  try {
+    const parsed: unknown = serialized ? JSON.parse(serialized) : {}
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) preferences = parsed as OrbitalColors
+  } catch { /* Invalid settings: render original vector */ }
+  const svg = renderOrbitalLogo(preferences)
+  previousSettings = serialized
+  cachedSrc = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
+  return cachedSrc
+}
 
 function useCobra() {
-  const make = () => HYRON_CODE_MARK
   const [src, setSrc] = createSignal("")
   onMount(() => {
-    const refresh = () => setSrc(make())
+    const refresh = () => setSrc(dynamicLogo())
     refresh()
     window.addEventListener("hyron-brand-change", refresh)
     window.addEventListener("storage", refresh)

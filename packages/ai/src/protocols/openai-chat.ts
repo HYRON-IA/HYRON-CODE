@@ -329,6 +329,7 @@ const OpenAIChatError = Schema.StructWithRest(
 export const OpenAIChatEvent = Schema.StructWithRest(
   Schema.Struct({
     choices: optionalNull(Schema.Array(OpenAIChatChoice)),
+    model: optionalNull(Schema.String),
     usage: optionalNull(OpenAIChatUsage),
     error: optionalNull(OpenAIChatError),
   }),
@@ -348,6 +349,8 @@ interface PendingToolDelta {
 
 export interface ParserState {
   readonly providerMetadataKey: string
+  readonly hyronCombo: boolean
+  readonly routedModel?: string
   readonly tools: ToolStream.State<number>
   readonly custom: ReadonlyMap<string, OpenAIFreeform.Custom>
   /** Stream indexes of custom tool calls, whose JSON fragment closes when the call finishes. */
@@ -1277,6 +1280,11 @@ const step = (state: ParserState, event: OpenAIChatEvent) =>
     return [
       {
         providerMetadataKey: state.providerMetadataKey,
+        hyronCombo: state.hyronCombo,
+        routedModel:
+          state.hyronCombo && event.model && event.model.toLowerCase() !== "hyroncode"
+            ? event.model
+            : state.routedModel,
         tools: finished?.tools ?? tools,
         custom: state.custom,
         customCalls,
@@ -1346,7 +1354,15 @@ export const finishEvents = Effect.fnUntraced(function* (state: ParserState) {
   const ended = Lifecycle.reasoningEnd(started, events, "reasoning-0", metadata)
   const lifecycle = toolCallEvents.length ? Lifecycle.stepStart(ended, events) : ended
   events.push(...toolCallEvents)
-  Lifecycle.finish(lifecycle, events, { reason, usage: state.usage })
+  Lifecycle.finish(lifecycle, events, {
+    reason,
+    usage: state.usage,
+    // Only report a router-chosen model observed on the wire; never guess a fallback.
+    providerMetadata:
+      state.hyronCombo && state.routedModel
+        ? { [state.providerMetadataKey]: { hyronRoutedModel: state.routedModel } }
+        : undefined,
+  })
   return events
 })
 
@@ -1369,6 +1385,7 @@ export const protocol = Protocol.make({
     event: OpenAIChatStreamEvent,
     initial: (request) => ({
       providerMetadataKey: request.model.route.providerMetadataKey ?? request.model.provider,
+      hyronCombo: request.model.id.toLowerCase() === "hyroncode",
       tools: ToolStream.empty<number>(),
       custom: OpenAIFreeform.tools(request),
       customCalls: new Set<number>(),

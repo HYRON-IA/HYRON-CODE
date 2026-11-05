@@ -1187,11 +1187,20 @@ export function AssistantTextContent(props: {
     })
   })
 
+  // Show the actual model only if 9Router supplied it as finished-step metadata.
+  const routedModel = createMemo(() => {
+    if (props.message.model.providerID !== "9router" || props.message.model.id.toLowerCase() !== "hyroncode")
+      return undefined
+    const value = (props.message.native as Record<string, unknown> | undefined)?.["hyronRoutedModel"]
+    return typeof value === "string" && value.trim().length > 0 ? value : undefined
+  })
+
   // Mobile omits the per-response agent and model; see CurrentUserMessageDisplay.
   const mobile = createMediaQuery("(max-width: 767px)")
 
   const meta = createMemo<MetaItem[]>(() => [
     ...(mobile() ? [] : labels()),
+    ...(routedModel() ? [{ label: `Respondido por ${routedModel()}` }] : []),
     ...[duration(), interrupted() ? i18n.t("ui.message.interrupted") : ""].flatMap((label) =>
       label ? [{ label }] : [],
     ),

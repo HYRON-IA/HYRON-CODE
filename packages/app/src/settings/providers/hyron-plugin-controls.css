@@ -1,0 +1,8 @@
+.hyron-plugin-controls{border-top:1px solid #7775;margin-top:14px;padding-top:12px;font-size:12px}
+.hyron-plugin-controls p{opacity:.82;line-height:1.4;margin:0 0 10px}
+.hyron-plugin-buttons{display:flex;gap:6px;flex-wrap:wrap}
+.hyron-plugin-buttons button{border:1px solid currentColor;border-radius:6px;padding:7px 9px;font-size:12px;cursor:pointer}
+.hyron-plugin-buttons button:disabled{opacity:.45;cursor:wait}
+.hyron-plugin-controls pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;max-height:180px;overflow:auto;border:1px solid #7775;padding:8px;margin-top:10px}
+.hyron-plugin-failure{color:#ff9898}
+.hyron-plugin-success{color:#61daa4}

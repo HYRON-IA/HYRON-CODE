@@ -84,11 +84,22 @@ function buildWebUi() {
 }
 
 async function startDesktop(args: string[]) {
-  // Bun's implicit spawn environment omits values set during preparation.
-  process.exitCode = await Bun.spawn(
-    ["node", fileURLToPath(new URL("../bin/electron-vite.js", import.meta.resolve("electron-vite"))), "dev", ...args],
-    { env: process.env, stdio: ["inherit", "inherit", "inherit"] },
-  ).exited
+  // HYRONCODE Extension Store: inicia e encerra automaticamente o bridge local.
+  const bridgePath = join(import.meta.dirname, "../../../hyron-plugin-bridge.cjs")
+  const bridge = Bun.spawn(["node", bridgePath], {
+    cwd: join(import.meta.dirname, "../../.."),
+    env: { ...process.env, HYRONCODE_ROOT: join(import.meta.dirname, "../../..") },
+    stdio: ["ignore", "inherit", "inherit"],
+  })
+  try {
+    // Bun's implicit spawn environment omits values set during preparation.
+    process.exitCode = await Bun.spawn(
+      ["node", fileURLToPath(new URL("../bin/electron-vite.js", import.meta.resolve("electron-vite"))), "dev", ...args],
+      { env: process.env, stdio: ["inherit", "inherit", "inherit"] },
+    ).exited
+  } finally {
+    bridge.kill()
+  }
 }
 
 await main()

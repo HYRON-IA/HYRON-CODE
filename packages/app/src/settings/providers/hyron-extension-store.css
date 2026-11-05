@@ -1,0 +1,25 @@
+.hyron-extension-store{display:flex;flex-direction:column;gap:16px;color:var(--text-strong,inherit);padding:12px 2px 20px}
+.hyron-store-toolbar{display:flex;align-items:start;justify-content:space-between;gap:12px}
+.hyron-store-toolbar h3{font-weight:650;font-size:17px;margin:0 0 5px}
+.hyron-store-toolbar p,.hyron-store-footnote,.hyron-store-placeholder,.hyron-store-sources p{font-size:12px;opacity:.75;line-height:1.5}
+.hyron-store-modes,.hyron-store-search,.hyron-store-add-source{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hyron-store-modes button,.hyron-store-search button,.hyron-store-source-row button,.hyron-store-add-source button{border:1px solid var(--border-base,#6665);border-radius:6px;padding:7px 10px;font-size:12px;cursor:pointer}
+.hyron-store-modes button.active{background:var(--surface-raised,#7773)}
+.hyron-store-search input,.hyron-store-add-source input{flex:1;min-width:140px;background:var(--surface-base,transparent);border:1px solid var(--border-base,#6665);border-radius:6px;padding:9px 12px;font-size:13px;color:inherit}
+.hyron-store-results{display:grid;grid-template-columns:minmax(240px,1.6fr) minmax(190px,1fr);gap:12px;min-height:260px}
+.hyron-store-list{min-width:0;max-height:470px;overflow:auto;border:1px solid var(--border-base,#6665);border-radius:8px}
+.hyron-store-entry{display:flex;flex-direction:column;gap:4px;padding:12px;text-align:left;border-bottom:1px solid var(--border-base,#6665);width:100%;cursor:pointer}
+.hyron-store-entry:hover,.hyron-store-entry.selected{background:var(--surface-raised,#7773)}
+.hyron-store-entry strong{font-size:13px}
+.hyron-store-entry span,.hyron-store-entry small,.hyron-store-entry em{font-size:11px;opacity:.77;font-style:normal;overflow-wrap:anywhere}
+.hyron-store-entry small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hyron-store-detail{border:1px solid var(--border-base,#6665);border-radius:8px;padding:16px;overflow-wrap:anywhere;font-size:13px;line-height:1.5}
+.hyron-store-detail h4{font-size:16px;font-weight:650}
+.hyron-store-detail p{margin:10px 0}
+.hyron-store-advisory{border-left:3px solid currentColor;padding-left:10px;opacity:.8}
+.hyron-store-placeholder{padding:14px}
+.hyron-store-source-row{border:1px solid var(--border-base,#6665);border-radius:7px;padding:10px;display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;font-size:12px}
+.hyron-store-source-row span{max-width:48%;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;opacity:.7}
+.hyron-store-add-source{margin-top:12px}
+.hyron-store-error{font-size:12px;color:var(--text-danger,#f97373)}
+@media(max-width:780px){.hyron-store-results{grid-template-columns:1fr}.hyron-store-toolbar{flex-direction:column}}

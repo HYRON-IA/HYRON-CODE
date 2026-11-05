@@ -3,6 +3,7 @@ import { marks } from "./lifecycle/marks"
 import { app } from "electron"
 import { acquireApplicationLock, configureApplication } from "./lifecycle/configure"
 import { startSidecarProbe } from "./service/sidecar-probe"
+import { startHyron9Router } from "./service/hyron-9router-autostart"
 import { registerStorageSnapshotHandler } from "./storage/snapshot"
 import { createEarlyWindow } from "./windows/early"
 import { rendererAssetsServed } from "./windows/protocol"
@@ -24,6 +25,7 @@ if (acquireApplicationLock()) {
     createEarlyWindow()
     marks.window = Date.now()
     startSidecarProbe()
+    void startHyron9Router()
 
     // The window's renderer is already loading. Its HTML and preloaded chunks are served from this
     // thread, so the bundle waits for that burst to be answered (or a cap) before it evaluates.

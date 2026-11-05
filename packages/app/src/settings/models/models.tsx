@@ -76,6 +76,11 @@ export const SettingsModels: Component<{
       .filter((item) => item.provider.id === providerID)
       .forEach((item) => models.setVisibility({ providerID, modelID: item.id }, visible))
 
+  const providerVisible = (providerID: string) => {
+    const items = models.list().filter((item) => item.provider.id === providerID)
+    return items.length > 0 && items.every((item) => models.visible({ providerID, modelID: item.id }))
+  }
+
   function ModelRows(props: { items: ModelItem[] }) {
     return (
       <SettingsList variant="catalog">
@@ -186,6 +191,15 @@ export const SettingsModels: Component<{
               expanded={expanded}
               disabled={searching()}
               onExpandedChange={(key, value) => setStore("collapsed", key, !value)}
+              action={(group) => (
+                <Switch
+                  class="me-6"
+                  checked={providerVisible(group.category)}
+                  onChange={(checked) => setProviderVisibility(group.category, checked)}
+                >
+                  {`Ativar todos os modelos de ${group.items[0].provider.name}`}
+                </Switch>
+              )}
               onSetVisibility={setProviderVisibility}
               ref={(providerID, element) => sections.set(providerID, element)}
               rows={(items) => <ModelRows items={items} />}

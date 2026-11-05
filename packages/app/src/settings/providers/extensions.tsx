@@ -1,4 +1,5 @@
 import { Predicate } from "effect"
+import { HyronExtensionStore } from "./hyron-extension-store"
 import { Component, For, Show, createEffect, createMemo, createResource, type JSX } from "solid-js"
 import { useDialog } from "@opencode/ui/context/dialog"
 import { Icon } from "@opencode/ui/icon"
@@ -100,15 +101,20 @@ export const SettingsExtensions: Component<{
           variant="pill"
           value={props.subtab ?? "mcps"}
           onChange={(value) => {
-            if (value === "mcps" || value === "plugins" || value === "skills") props.onSubtab(value)
+            if (value === "mcps" || value === "plugins" || value === "skills" || value === "store") props.onSubtab(value)
           }}
           class="settings-extensions-tabs settings-subtabs"
         >
           <Tabs.List>
+            <Tabs.Trigger value="store">Loja</Tabs.Trigger>
             <Tabs.Trigger value="mcps">{language.t("settings.extensions.tab.mcps")}</Tabs.Trigger>
             <Tabs.Trigger value="plugins">{language.t("settings.extensions.tab.plugins")}</Tabs.Trigger>
             <Tabs.Trigger value="skills">{language.t("settings.extensions.tab.skills")}</Tabs.Trigger>
           </Tabs.List>
+
+          <Tabs.Content value="store">
+            <HyronExtensionStore />
+          </Tabs.Content>
 
           <Tabs.Content value="mcps">
             <div class="settings-section">

@@ -24,7 +24,7 @@ export type SettingsProjectTab = "general" | "workspaces" | "extensions"
 
 type SettingsViewState = {
   target?: string
-  subtab?: "mcps" | "plugins" | "skills" | "lsps"
+  subtab?: "store" | "mcps" | "plugins" | "skills" | "lsps"
   searchActivation?: number
 }
 
@@ -65,6 +65,7 @@ const projectTabs: Record<SettingsProjectTab, true> = {
 }
 
 const subtabs: Record<NonNullable<SettingsView["subtab"]>, true> = {
+  store: true,
   mcps: true,
   plugins: true,
   skills: true,
