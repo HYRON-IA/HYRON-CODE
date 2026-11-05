@@ -212,8 +212,8 @@ const ProjectLanguageServers: Component = () => {
 }
 
 export const ProjectSettingsExtensions: Component<{
-  subtab?: "mcps" | "plugins" | "skills" | "lsps"
-  onSubtab: (value: "mcps" | "plugins" | "skills" | "lsps") => void
+  subtab?: "mcps" | "plugins" | "skills" | "lsps" | "store"
+  onSubtab: (value: "mcps" | "plugins" | "skills" | "lsps" | "store") => void
 }> = (props) => {
   const language = useLanguage()
   const serverSDK = useServerSDK()
