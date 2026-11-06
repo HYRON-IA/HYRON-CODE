@@ -14,7 +14,9 @@ import { Environment } from "../../environment/index.js"
 import { FileMutation } from "../../file-mutation.js"
 import { Formatter } from "../../formatter.js"
 import { FileAccess } from "../../file-access.js"
+import { Location } from "../../location.js"
 import { Permission } from "../../permission.js"
+import { createCheckpoint, finalizeCheckpoint } from "../../fenix/checkpoint.mjs"
 import { fileDiff } from "./file-diff.js"
 
 export const name = "write"
@@ -51,6 +53,7 @@ export const Plugin = {
     const environment = yield* Environment.Service
     const formatter = yield* Formatter.Service
     const permission = yield* Permission.Service
+    const location = yield* Location.Service
 
     yield* ctx.tool
       .transform((editor) =>
@@ -84,13 +87,22 @@ export const Plugin = {
                 agent: context.agent,
                 source,
               })
+              const fenix = yield* Effect.tryPromise({
+                try: () => createCheckpoint({ root: location.project.directory, files: [target.absolute], operation: "write", sessionID: String(context.sessionID) }),
+                catch: (error) => new ToolFailure({ message: "Fenix nao conseguiu criar checkpoint; gravacao bloqueada", error }),
+              })
               const result = yield* fileMutation.writeTextPreservingBom({ target, content: input.content })
               const bom = (yield* FileMutation.readText(environment.files, target.absolute)).bom
               if (yield* formatter.file(target.absolute)) {
                 yield* FileMutation.syncTextBom(environment.files, target.absolute, bom)
               }
+              yield* Effect.tryPromise({
+                try: () => finalizeCheckpoint(fenix),
+                catch: (error) => new ToolFailure({ message: `Arquivo gravado, mas Fenix nao finalizou o checkpoint ${fenix.id}; verifique o historico`, error }),
+              })
               return result
             }).pipe(
+              fileMutation.withLock([FileAccess.resolvePath(location.directory, input.path)]),
               Effect.map((output) => ({ output, content: toModelContent(output) })),
               Effect.mapError((error) => new ToolFailure({ message: `Unable to write ${input.path}`, error })),
             ),

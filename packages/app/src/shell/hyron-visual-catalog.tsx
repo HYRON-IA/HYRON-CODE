@@ -3,6 +3,7 @@ import { studioCatalog } from "@/settings/appearance/hyron-studio-catalog"
 import { secretCharactersForQuery, secretCharacterById, isSecretCharacterId } from "@/settings/appearance/hyron-secret-characters"
 import { activateHyronStudioProfile } from "@/settings/appearance/hyron-personality-selection"
 import { resolveSecretPortrait, hasSecretPortraitOverride } from "./hyron-secret-portrait"
+import { HYRON_LIVING_AVATAR_EVENT } from "./hyron-living-state"
 import { deletePortrait, originalPortrait, portraitThumbnail, putPortrait, storedPortraitIds } from "./hyron-portrait-store"
 import "./hyron-visual-catalog.css"
 
@@ -210,6 +211,7 @@ export function HyronVisualCatalog(props: { onClose: () => void }) {
     persist(HIDDEN_KEY, next, setHidden)
     setBroken(s => { const result = { ...s }; delete result[id]; return result })
     setPage(1) // O bloco com imagem passa imediatamente para o início.
+    window.dispatchEvent(new Event(HYRON_LIVING_AVATAR_EVENT))
   }
   const uploadImage = async (file?: File) => {
     const id = uploadTarget
@@ -255,6 +257,7 @@ export function HyronVisualCatalog(props: { onClose: () => void }) {
       if (previous) { URL.revokeObjectURL(previous); allocated.delete(id) }
       setThumbnails(s => { const copy = { ...s }; delete copy[id]; return copy })
       setBroken(s => { const copy = { ...s }; delete copy[id]; return copy })
+      window.dispatchEvent(new Event(HYRON_LIVING_AVATAR_EVENT))
       if (isSecretCharacterId(id)) {
         setImageUrl("")
         setMessage(`${id}: avatar padrão restaurado. A personalidade não foi alterada.`)

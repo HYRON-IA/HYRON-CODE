@@ -13,6 +13,7 @@ import { Location } from "../../location.js"
 import { FileAccess } from "../../file-access.js"
 import { Patch } from "@opencode/util/patch"
 import { Permission } from "../../permission.js"
+import { createCheckpoint, finalizeCheckpoint } from "../../fenix/checkpoint.mjs"
 import DESCRIPTION from "../patch.txt"
 import { fileDiff } from "./file-diff.js"
 
@@ -230,6 +231,11 @@ export const Plugin = {
                 source,
               })
 
+              const fenix = yield* Effect.tryPromise({
+                try: () => createCheckpoint({ root: location.project.directory, files: targets.map((target) => target.absolute), operation: "patch", sessionID: String(context.sessionID) }),
+                catch: (error) => new ToolFailure({ message: "Fenix nao conseguiu criar checkpoint; patch bloqueado", error }),
+              })
+
               yield* Effect.forEach(
                 prepared,
                 (change) =>
@@ -298,6 +304,10 @@ export const Plugin = {
                 if (change.type === "delete") return patchFile(change)
                 const target = change.type === "update" && change.moveTarget ? change.moveTarget : change.target
                 return patchFile(change, formatted.get(target.absolute))
+              })
+              yield* Effect.tryPromise({
+                try: () => finalizeCheckpoint(fenix),
+                catch: (error) => new ToolFailure({ message: `Patch aplicado, mas Fenix nao finalizou o checkpoint ${fenix.id}; verifique o historico`, error }),
               })
               return { applied, files }
             }).pipe(

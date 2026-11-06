@@ -17,6 +17,7 @@ import { Formatter } from "../../formatter.js"
 import { Location } from "../../location.js"
 import { FileAccess } from "../../file-access.js"
 import { Permission } from "../../permission.js"
+import { createCheckpoint, finalizeCheckpoint } from "../../fenix/checkpoint.mjs"
 import { fileDiff } from "./file-diff.js"
 
 export const name = "edit"
@@ -298,6 +299,11 @@ export const Plugin = {
                     : `No changes to apply: the edit leaves ${input.path} unchanged. Line endings follow the file; to change them, write \\r explicitly in oldString or newString.`,
                 })
               }
+              // FENIX: after approval and validation, before the first on-disk change.
+              const fenix = yield* Effect.tryPromise({
+                try: () => createCheckpoint({ root: location.project.directory, files: [target.absolute], operation: "edit", sessionID: String(context.sessionID) }),
+                catch: (error) => new ToolFailure({ message: "Fenix nao conseguiu criar checkpoint; edicao bloqueada", error }),
+              })
               const replacementBom = replaced.startsWith("\uFEFF")
               const result = yield* fileMutation.write({
                 target,
@@ -307,6 +313,11 @@ export const Plugin = {
               const formatted = (yield* formatter.file(target.absolute))
                 ? yield* FileMutation.syncTextBom(environment.files, target.absolute, bom)
                 : (yield* FileMutation.readText(environment.files, target.absolute)).text
+              // Do not mark the edit successful if the protective journal was not finalized.
+              yield* Effect.tryPromise({
+                try: () => finalizeCheckpoint(fenix),
+                catch: (error) => new ToolFailure({ message: `Edicao aplicada, mas Fenix nao finalizou o checkpoint ${fenix.id}; verifique o historico`, error }),
+              })
               return {
                 files: [fileDiff(result.resource, source, formatted)],
                 replacements,

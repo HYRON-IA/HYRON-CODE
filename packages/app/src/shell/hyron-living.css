@@ -1,0 +1,26 @@
+/* HYRONCODE Personalidades Vivas: somente superficie visual, sem alteracao no composer. */
+.hyron-living-panel{display:grid;gap:12px;padding:14px;margin:0 0 12px;border:1px solid var(--border-base,#35564c);border-radius:12px;background:color-mix(in srgb,var(--background-base,#102820) 78%,transparent)}
+.hyron-living-panel__heading{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.hyron-living-panel__heading span,.hyron-living-muted{font-size:12px;opacity:.75}
+.hyron-living-panel label{display:flex;align-items:center;gap:8px;font-size:13px}
+.hyron-living-identity{display:flex;align-items:center;gap:13px;border-radius:10px;padding:10px;background:var(--background-base,#102820)}
+.hyron-living-identity__text{min-width:0;display:grid;gap:4px}
+.hyron-living-identity__text strong{overflow-wrap:anywhere}
+.hyron-living-identity__text small{opacity:.7;overflow-wrap:anywhere}
+.hyron-living-identity__text [role=status]{color:#62e9a2;font-size:12px}
+.hyron-living-portrait{display:grid;place-items:center;position:relative;flex:none;width:66px;height:66px;border-radius:50%;overflow:hidden;background:#15382b;border:2px solid #438f68;box-shadow:0 0 0 3px #25533955}
+.hyron-living-portrait img{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hyron-living-initial{font-size:30px;color:#a7eac1;font-weight:700}
+.hyron-living-rail{display:flex;align-items:center;gap:8px;min-height:36px;max-width:100%;width:100%;border-radius:6px;padding:0 8px;color:inherit;font-size:12px;text-align:left;overflow:hidden}
+.hyron-living-rail:hover{background:var(--background-base,#19432b)}
+.hyron-living-rail__dot{width:12px;height:12px;flex:none;border-radius:50%;background:#50e697;box-shadow:0 0 0 2px #29925d66}
+.hyron-living-rail__name{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+html[data-hyron-living-animation=on] .hyron-living-portrait--active{animation:hyron-living-breathe 3.8s ease-in-out infinite}
+html[data-hyron-living-animation=on] .hyron-character-card.is-selected .hyron-character-card__picture img{animation:hyron-living-breathe 4.4s ease-in-out infinite}
+html[data-hyron-living-animation=on] .hyron-living-rail__dot{animation:hyron-living-glow 3.8s ease-in-out infinite}
+@keyframes hyron-living-breathe{0%,100%{filter:brightness(1);transform:scale(1)}50%{filter:brightness(1.08);transform:scale(1.035)}}
+@keyframes hyron-living-glow{0%,100%{opacity:.75}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.hyron-living-portrait,.hyron-living-rail__dot,.hyron-character-card.is-selected .hyron-character-card__picture img{animation:none!important}}
+html[data-hyroncode-secret-reduced=on] .hyron-living-portrait,
+html[data-hyroncode-secret-reduced=on] .hyron-living-rail__dot,
+html[data-hyroncode-secret-reduced=on] .hyron-character-card.is-selected .hyron-character-card__picture img{animation:none!important}

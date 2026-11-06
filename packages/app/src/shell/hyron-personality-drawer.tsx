@@ -2,6 +2,7 @@ import { createSignal, onMount, onCleanup, Show } from "solid-js"
 import { HyronPersonalitySettings } from "@/settings/appearance/hyron-personality"
 import { HyronPersonalityStudio } from "@/settings/appearance/hyron-personality-studio"
 import { HyronVisualCatalog } from "@/shell/hyron-visual-catalog"
+import { HyronLivingPanel } from "./hyron-living-ui"
 
 export function HyronPersonalityDrawer() {
   const [open, setOpen] = createSignal(false)
@@ -26,6 +27,7 @@ export function HyronPersonalityDrawer() {
           <button type="button" class="w-full rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-medium py-3" onClick={() => setCatalog(true)}>▦ Catálogo adaptativo · fotos primeiro / nomes no final</button>
         </div>
         <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 py-4 [&_input]:select-text [&_textarea]:select-text">
+          <HyronLivingPanel />
           <HyronPersonalitySettings />
           <HyronPersonalityStudio />
         </div>

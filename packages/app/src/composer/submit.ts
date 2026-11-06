@@ -13,6 +13,7 @@ import { blobDataUrl, resolveBlobUrl } from "@/runtime/persistence/drafts"
 import { isAttachment } from "./prompt-parts"
 import type { ModelSelection } from "@/providers/models/selection"
 import { parseSlashCommand } from "./client-slash-command"
+import { dispatchHyronEaster, easterUiCommand } from "@/shell/hyron-easter-logic"
 
 const submitting = new WeakSet<object>()
 
@@ -67,6 +68,20 @@ export function createComposerSubmit(input: ComposerSubmitInput) {
 
     const prompt = clonePrompt(input.adapter.state.current())
     const text = submissionText(prompt)
+    // HYRONCODE V1.4: act only on standalone commands; never intercept code, files or context.
+    const easter = input.mode() === "normal" && prompt.every(part => part.type === "text") &&
+      input.adapter.state.context.items().length === 0 ? easterUiCommand(text) : undefined
+    if (easter) {
+      if (submitting.has(input.adapter.state)) return
+      submitting.add(input.adapter.state)
+      try {
+        clearClientCommand(input, prompt)
+        dispatchHyronEaster(easter)
+      } finally {
+        submitting.delete(input.adapter.state)
+      }
+      return
+    }
     const clientCommand = input.mode() === "normal" ? input.clientCommand?.(text) : undefined
 
     if (clientCommand) {

@@ -2,6 +2,7 @@ import { encodeFilePath, getFilename } from "@opencode/util/path"
 import { parseSessionMention } from "@opencode/util/session-mention"
 import { serializePrompt } from "./prompt-parts"
 import { readHyronPersonalityState } from "@/settings/appearance/hyron-personality" // HYRON-CODE-0932-IDENTIDADE-NATIVA
+import { withHyronEasterPrompt } from "@/shell/hyron-easter-logic"
 import type { FileSelection } from "@/workspaces/files/model"
 import type {
   AgentPart,
@@ -211,7 +212,7 @@ export function buildPromptRequest(input: BuildPromptRequestInput): PromptReques
     .map((part) => ({ name: part.filename, mime: part.mime, path: part.path }))
 
   return {
-    personality: readHyronPersonalityState(),
+    personality: withHyronEasterPrompt(readHyronPersonalityState(), text),
     text: [
       ...(text.trim() ? [text] : []),
       ...attachments.map(formatAttachmentReference),
