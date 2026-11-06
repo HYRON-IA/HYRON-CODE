@@ -1,5 +1,6 @@
-import { createSignal, onMount, For, Show } from "solid-js"
+import { createSignal, onMount, onCleanup, For, Show } from "solid-js"
 import { studioCatalog } from "./hyron-studio-catalog"
+import { secretCharacterById, secretCharactersForQuery, secretCharacterSystemInstruction, isSecretCharacterId } from "./hyron-secret-characters"
 
 const KEY = "hyroncode-studio-personality-v1"
 const MAX = 100
@@ -39,6 +40,8 @@ export function readHyronStudioInstruction(): string | undefined {
   let p: Stored
   try { p = decode(localStorage.getItem(KEY)) } catch { return }
   if (!p.active) return
+  const secret = secretCharacterSystemInstruction(p.selected)
+  if (secret) return secret
   const item = studioCatalog.find(i => i.id === p.selected)
   const mine = p.custom.find(i => i.id === p.selected)
   if (!item && !mine) return
@@ -81,14 +84,27 @@ export function HyronPersonalityStudio() {
   const [editing, setEditing] = createSignal("")
   const [message, setMessage] = createSignal("")
   let importer: HTMLInputElement | undefined
-  onMount(() => { try { setState(decode(localStorage.getItem(KEY))) } catch { setMessage("Armazenamento indisponivel") } })
+  onMount(() => {
+    const refresh = () => {
+      try { setState(decode(localStorage.getItem(KEY))) }
+      catch { setMessage("Armazenamento indisponivel") }
+    }
+    refresh()
+    // O evento personalizado funciona na mesma janela; storage cobre outras janelas.
+    window.addEventListener("hyron-personality-change", refresh)
+    window.addEventListener("storage", refresh)
+    onCleanup(() => {
+      window.removeEventListener("hyron-personality-change", refresh)
+      window.removeEventListener("storage", refresh)
+    })
+  })
   const save = (next: Stored) => {
     try { localStorage.setItem(KEY, JSON.stringify(next)); setState(next); window.dispatchEvent(new Event("hyron-personality-change")); setMessage("Preferencia salva para as proximas mensagens.") }
     catch { setMessage("Falha ao salvar. Verifique o armazenamento local.") }
   }
-  const all = () => [...studioCatalog, ...state().custom.map(i => ({ id: i.id, name: i.name, description: i.description, group: "Meus perfis", origin: "Original", instruction: i.description }))]
-  const visible = () => all().filter(i => (group() === "Todos" || i.group === group()) && `${i.name} ${i.origin}`.toLocaleLowerCase().includes(query().toLocaleLowerCase())).slice(0, 120)
-  const selected = () => all().find(i => i.id === state().selected)
+  const all = () => [...secretCharactersForQuery(query()), ...studioCatalog, ...state().custom.map(i => ({ id: i.id, name: i.name, description: i.description, group: "Meus perfis", origin: "Original", instruction: i.description }))]
+  const visible = () => all().filter(i => isSecretCharacterId(i.id) ? true : (group() === "Todos" || i.group === group()) && `${i.name} ${i.origin}`.toLocaleLowerCase().includes(query().toLocaleLowerCase())).slice(0, 120)
+  const selected = () => all().find(i => i.id === state().selected) ?? secretCharacterById(state().selected)
   const draft = () => { const chosen = state().custom.find(i => i.id === state().selected); if (chosen) { setEditing(chosen.id); setName(chosen.name); setDescription(chosen.description) } else { setEditing(""); setName(""); setDescription("") } }
   const storeCustom = () => {
     const n = name().trim().slice(0, 80), d = description().trim().slice(0, LIMIT)
@@ -134,9 +150,10 @@ export function HyronPersonalityStudio() {
     </div>
     <label style={{ display: "grid", gap: "5px" }}>Perfil selecionado
       <select size={6} value={state().selected} onChange={e => save({ ...state(), active: true, selected: e.currentTarget.value })} style={{ ...field, width: "100%" }}>
-        <For each={visible()}>{i => <option value={i.id}>{i.name} — {i.origin}</option>}</For>
+        <For each={visible()}>{i => <option value={i.id}>{isSecretCharacterId(i.id) ? "✦ SECRETO · " : ""}{i.name} — {i.origin}</option>}</For>
       </select>
     </label>
+    <small aria-live="polite" style={{ opacity: "0.85" }}>{state().active ? `Ativo nas proximas mensagens: ${selected()?.name ?? state().selected}` : "Estudio desativado"}</small>
     <Show when={selected()}>{i => <div style={{ "font-size": "12px", opacity: "0.85" }}><strong>{i().name}:</strong> {i().description}</div>}</Show>
     <label style={{ display: "grid", gap: "6px" }}>Nivel de ma educacao: {state().rude}/5
       <input type="range" min="0" max="5" step="1" value={state().rude} onInput={e => save({ ...state(), rude: Number(e.currentTarget.value) })} />

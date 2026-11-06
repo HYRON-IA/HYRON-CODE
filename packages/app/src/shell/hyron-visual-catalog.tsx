@@ -1,5 +1,8 @@
 import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js"
 import { studioCatalog } from "@/settings/appearance/hyron-studio-catalog"
+import { secretCharactersForQuery, secretCharacterById, isSecretCharacterId } from "@/settings/appearance/hyron-secret-characters"
+import { activateHyronStudioProfile } from "@/settings/appearance/hyron-personality-selection"
+import { resolveSecretPortrait, hasSecretPortraitOverride } from "./hyron-secret-portrait"
 import { deletePortrait, originalPortrait, portraitThumbnail, putPortrait, storedPortraitIds } from "./hyron-portrait-store"
 import "./hyron-visual-catalog.css"
 
@@ -102,20 +105,34 @@ export function HyronVisualCatalog(props: { onClose: () => void }) {
   })
 
   const entries = createMemo<Entry[]>(() => [
+    ...secretCharactersForQuery(query()).map(x => ({ id: x.id, name: x.name, origin: x.origin, group: x.group, description: x.description })),
     ...studioCatalog.map(x => ({ id: x.id, name: x.name, origin: x.origin, group: x.group, description: x.description })),
     ...state().custom.map(x => ({ id: x.id, name: x.name, origin: "Original", group: "Meus perfis", description: x.description })),
   ])
   const origins = createMemo(() => ["Todas", ...Array.from(new Set(entries().filter(e => group() === "Todos" || e.group === group()).map(e => e.origin))).sort((a, b) => a.localeCompare(b, "pt-BR"))])
-  const hasPortrait = (id: string) => !hidden()[id] && !broken()[id] && Boolean(uploaded()[id] || legacyImages()[id] || localPortraits()[id])
-  const portrait = (id: string) => hidden()[id] || broken()[id] ? "" : thumbnails()[id] || legacyImages()[id] || localPortraits()[id] || ""
+  // Um avatar secreto sempre mantém seu SVG de fábrica como fallback.
+  const hasPortrait = (id: string) => isSecretCharacterId(id) || (!hidden()[id] && !broken()[id] && Boolean(uploaded()[id] || legacyImages()[id] || localPortraits()[id]))
+  const customSecretPortrait = (id: string) => hasSecretPortraitOverride({ uploaded: Boolean(uploaded()[id]), link: legacyImages()[id] })
+  const portrait = (id: string) => {
+    if (isSecretCharacterId(id)) return resolveSecretPortrait({
+      defaultAvatar: secretCharacterById(id)?.avatar ?? "",
+      thumbnail: thumbnails()[id],
+      link: legacyImages()[id],
+      hidden: Boolean(hidden()[id]),
+      broken: Boolean(broken()[id]),
+    })
+    return hidden()[id] || broken()[id] ? "" : thumbnails()[id] || legacyImages()[id] || localPortraits()[id] || ""
+  }
   const filtered = createMemo(() => {
     const needle = query().trim().toLocaleLowerCase("pt-BR")
     return entries().filter(e =>
-      (group() === "Todos" || e.group === group()) &&
-      (origin() === "Todas" || e.origin === origin()) &&
-      (!onlyFavorites() || favorites()[e.id] === "1") &&
-      (!needle || `${e.id} ${e.name} ${e.origin} ${e.group} ${e.description}`.toLocaleLowerCase("pt-BR").includes(needle))
-    ).sort((a, b) => Number(hasPortrait(b.id)) - Number(hasPortrait(a.id)))
+      isSecretCharacterId(e.id) || (
+        (group() === "Todos" || e.group === group()) &&
+        (origin() === "Todas" || e.origin === origin()) &&
+        (!onlyFavorites() || favorites()[e.id] === "1") &&
+        (!needle || `${e.id} ${e.name} ${e.origin} ${e.group} ${e.description}`.toLocaleLowerCase("pt-BR").includes(needle))
+      )
+    ).sort((a, b) => Number(isSecretCharacterId(b.id)) - Number(isSecretCharacterId(a.id)) || Number(hasPortrait(b.id)) - Number(hasPortrait(a.id)))
   })
   const withImageCount = createMemo(() => filtered().filter(e => hasPortrait(e.id)).length)
   const pages = createMemo(() => Math.max(1, Math.ceil(filtered().length / PAGE_SIZE)))
@@ -163,6 +180,17 @@ export function HyronVisualCatalog(props: { onClose: () => void }) {
   const choose = (item: Entry) => {
     setCurrent(item.id)
     setImageUrl(legacyImages()[item.id]?.startsWith("https://") ? legacyImages()[item.id] : "")
+  }
+  // Foto, nome e botoes selecionam o mesmo perfil salvo pelo Estudio.
+  // Preserva preferencias/customizacoes mesmo quando a outra interface as alterou.
+  const activate = (item: Entry) => {
+    choose(item)
+    if (!activateHyronStudioProfile(item.id)) {
+      setMessage("Falha ao ativar personalidade. Nenhuma preferencia foi sobrescrita.")
+      return
+    }
+    refresh()
+    setMessage(`${item.name} ativado(a) para as proximas mensagens.`)
   }
   const selectImage = (id: string) => {
     uploadTarget = id
@@ -213,17 +241,27 @@ export function HyronVisualCatalog(props: { onClose: () => void }) {
     if (busy()) return
     setBusy(true)
     try {
+      // Remove somente a substituição do usuário; o SVG padrão permanece no app.
       await deletePortrait(id)
-      const nextHidden = { ...hidden(), [id]: "1" }
+      const nextHidden = { ...hidden() }
+      if (isSecretCharacterId(id)) delete nextHidden[id]
+      else nextHidden[id] = "1"
+      // Mantém o comportamento original dos personagens convencionais.
       if (!persist(HIDDEN_KEY, nextHidden, setHidden)) return
       const nextLegacy = { ...legacyImages() }; delete nextLegacy[id]
-      persist(IMG_KEY, nextLegacy, setLegacyImages)
+      if (!persist(IMG_KEY, nextLegacy, setLegacyImages)) return
       setUploaded(s => { const copy = { ...s }; delete copy[id]; return copy })
       const previous = allocated.get(id)
       if (previous) { URL.revokeObjectURL(previous); allocated.delete(id) }
       setThumbnails(s => { const copy = { ...s }; delete copy[id]; return copy })
-      setPage(1) // O bloco sem foto deixa de reservar espaço e vai ao final.
-      setMessage(`${id}: imagem removida. Cartão compacto movido para o fim.`)
+      setBroken(s => { const copy = { ...s }; delete copy[id]; return copy })
+      if (isSecretCharacterId(id)) {
+        setImageUrl("")
+        setMessage(`${id}: avatar padrão restaurado. A personalidade não foi alterada.`)
+      } else {
+        setPage(1) // O bloco sem foto deixa de reservar espaço e vai ao final.
+        setMessage(`${id}: imagem removida. Cartão compacto movido para o fim.`)
+      }
     } catch (error) { setMessage(error instanceof Error ? error.message : "Falha ao remover imagem.") }
     finally { setBusy(false) }
   }
@@ -249,19 +287,19 @@ export function HyronVisualCatalog(props: { onClose: () => void }) {
       setTimeout(() => URL.revokeObjectURL(url), 2000)
     } catch { setMessage("Não foi possível exportar a imagem original.") }
   }
-  const card = (item: Entry) => <article class="hyron-character-card" classList={{ "has-portrait": hasPortrait(item.id), "is-selected": current() === item.id }}>
+  const card = (item: Entry) => <article class="hyron-character-card" classList={{ "has-portrait": hasPortrait(item.id), "is-selected": state().active && state().selected === item.id }}>
     <Show when={hasPortrait(item.id) && portrait(item.id)}>
-      <button type="button" class="hyron-character-card__picture" onClick={() => choose(item)} aria-label={`Ver detalhes de ${item.name}`}>
+      <button type="button" class="hyron-character-card__picture" onClick={() => activate(item)} aria-label={`Ativar personalidade ${item.name}`}>
         <img src={portrait(item.id)} alt={`Retrato de ${item.name}`} loading="lazy" referrerPolicy="no-referrer" onError={() => { setBroken(s => ({ ...s, [item.id]: "1" })); setMessage(`Não foi possível carregar a imagem de ${item.id}. Adicione outro arquivo.`) }}/>
       </button>
     </Show>
     <div class="hyron-character-card__body">
-      <div class="hyron-character-card__top"><span>{item.id}</span><button type="button" onClick={() => favorite(item.id)} aria-label={`Favoritar ${item.name}`} aria-pressed={favorites()[item.id] === "1"} class="hyron-character-card__favorite">{favorites()[item.id] === "1" ? "★" : "☆"}</button></div>
-      <button type="button" class="hyron-character-card__name" onClick={() => choose(item)} title={`Abrir informações de ${item.name}`}>{item.name}</button>
+      <div class="hyron-character-card__top"><span>{isSecretCharacterId(item.id) ? `✦ SECRETO · ${item.id}` : item.id}</span><button type="button" onClick={() => favorite(item.id)} aria-label={`Favoritar ${item.name}`} aria-pressed={favorites()[item.id] === "1"} class="hyron-character-card__favorite">{favorites()[item.id] === "1" ? "★" : "☆"}</button></div>
+      <button type="button" class="hyron-character-card__name" onClick={() => activate(item)} title={`Ativar personalidade ${item.name}`}>{item.name}</button>
       <span class="hyron-character-card__origin" title={item.origin}>{item.origin}</span>
       <p class="hyron-character-card__description" title={item.description}>{item.description || "Descrição não cadastrada."}</p>
       <div class="hyron-character-card__actions">
-        <button type="button" class="hyron-character-card__select" aria-pressed={state().active && state().selected === item.id} onClick={() => { choose(item); save({ ...state(), selected: item.id, active: true }) }}>{state().active && state().selected === item.id ? "Selecionado ✓" : "Selecionar"}</button>
+        <button type="button" class="hyron-character-card__select" aria-pressed={state().active && state().selected === item.id} onClick={() => activate(item)}>{state().active && state().selected === item.id ? "Selecionado ✓" : "Selecionar"}</button>
         <button type="button" disabled={busy()} onClick={() => selectImage(item.id)}>{hasPortrait(item.id) ? "Trocar imagem" : "+ Adicionar imagem"}</button>
         <button type="button" onClick={() => choose(item)}>Detalhes</button>
       </div>
@@ -301,13 +339,15 @@ export function HyronVisualCatalog(props: { onClose: () => void }) {
           <div class="hyron-character-detail__heading"><div><strong>{label(item())}</strong><span>{item().origin} · {item().group}</span></div><button type="button" onClick={() => setCurrent("")}>Fechar detalhes ✕</button></div>
           <p>{item().description}</p>
           <div class="hyron-character-detail__actions">
-            <button type="button" class="hyron-character-accent" onClick={() => save({ ...state(), selected: item().id, active: true })}>{state().active && state().selected === item().id ? "Personalidade ativa ✓" : "Ativar personalidade"}</button>
+            <button type="button" class="hyron-character-accent" onClick={() => activate(item())}>{state().active && state().selected === item().id ? "Personalidade ativa ✓" : "Ativar personalidade"}</button>
             <button type="button" disabled={busy()} onClick={() => selectImage(item().id)}>{hasPortrait(item().id) ? "Trocar imagem" : "+ Adicionar imagem"}</button>
-            <Show when={hasPortrait(item().id)}><button type="button" disabled={busy()} onClick={() => { void removeImage(item().id) }}>Remover imagem</button></Show>
+            <Show when={isSecretCharacterId(item().id) ? customSecretPortrait(item().id) : hasPortrait(item().id)}>
+              <button type="button" disabled={busy()} onClick={() => { void removeImage(item().id) }}>{isSecretCharacterId(item().id) ? "Restaurar avatar padrão" : "Remover imagem"}</button>
+            </Show>
             <Show when={uploaded()[item().id]}><button type="button" onClick={() => { void downloadOriginal(item().id) }}>Baixar original</button></Show>
             <label class="hyron-character-rudeness">Irreverência: {state().rude}/5 <input type="range" min="0" max="5" step="1" value={state().rude} onInput={e => save({ ...state(), rude: Number(e.currentTarget.value) })}/></label>
           </div>
-          <div class="hyron-character-url"><input type="url" value={imageUrl()} onInput={e => setImageUrl(e.currentTarget.value)} placeholder="Alternativa: URL HTTPS de imagem" aria-label="Link de imagem"/><button type="button" onClick={() => storeUrl(item().id)}>Salvar link</button></div>
+          <Show when={!isSecretCharacterId(item().id)}><div class="hyron-character-url"><input type="url" value={imageUrl()} onInput={e => setImageUrl(e.currentTarget.value)} placeholder="Alternativa: URL HTTPS de imagem" aria-label="Link de imagem"/><button type="button" onClick={() => storeUrl(item().id)}>Salvar link</button></div></Show>
         </div>}</Show>
       </div>
       <footer class="hyron-character-footer">

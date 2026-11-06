@@ -27,12 +27,16 @@ function database(): Promise<IDBDatabase> {
   return pendingDatabase
 }
 
-function validId(id: string): boolean { return /^(JO|FI|AN|AR|SÉ)-\d{3}$|^USER-[A-Za-z0-9-]{1,85}$/.test(id) }
+// Os 12 IDs secretos compartilham o mesmo armazenamento local dos demais retratos.
+// Não habilita IDs arbitrários (SEC-013, SEC-999, etc.).
+export function validPortraitId(id: string): boolean {
+  return /^(JO|FI|AN|AR|SÉ)-\d{3}$|^USER-[A-Za-z0-9-]{1,85}$|^SEC-(?:00[1-9]|01[0-2])$/.test(id)
+}
 export async function storedPortraitIds(): Promise<string[]> {
   const db = await database()
   return new Promise((resolve, reject) => {
     const req = db.transaction(THUMBNAILS, "readonly").objectStore(THUMBNAILS).getAllKeys()
-    req.onsuccess = () => resolve(req.result.filter((key): key is string => typeof key === "string" && validId(key)))
+    req.onsuccess = () => resolve(req.result.filter((key): key is string => typeof key === "string" && validPortraitId(key)))
     req.onerror = () => reject(req.error ?? new Error("Falha ao listar retratos."))
   })
 }
@@ -65,7 +69,7 @@ async function thumbnail(file: File): Promise<Blob> {
 }
 
 export async function putPortrait(id: string, file: File): Promise<Blob> {
-  if (!validId(id)) throw new Error("Identificador de personagem inválido.")
+  if (!validPortraitId(id)) throw new Error("Identificador de personagem inválido.")
   if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) throw new Error("Aceitamos apenas PNG, JPG ou WebP.")
   if (!file.size || file.size > MAX_PORTRAIT_BYTES) throw new Error("A imagem deve ter no máximo 15 MB.")
   const preview = await thumbnail(file)
