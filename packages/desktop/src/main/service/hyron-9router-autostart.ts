@@ -6,17 +6,24 @@ import { connect } from "node:net"
 import { basename, dirname, join, resolve } from "node:path"
 
 const PORT = 20128
+const PACKAGED_ENTRY = join("hyron-9router", "node_modules", "9router", "app", "custom-server.js")
+const PACKAGED_NODE = join("hyron-9router", "runtime", "node.exe")
+const BUNDLE_RELATIVE = join("integrations", "9router-preinstalled", "node_modules", "9router", "app", "custom-server.js")
 const ROUTER_RELATIVE = join("integrations", "9router", "node_modules", "9router", "app", "custom-server.js")
 let launched = false
 
 function routerPath(): string | undefined {
   const override = process.env.HYRONCODE_9ROUTER_ENTRY
   if (override && existsSync(override)) return override
+  const packaged = join(process.resourcesPath, PACKAGED_ENTRY)
+  if (existsSync(packaged)) return packaged
   for (const startingPoint of [process.cwd(), app.getAppPath(), process.resourcesPath]) {
     let directory = resolve(startingPoint)
     for (let depth = 0; depth < 9; depth++) {
-      const candidate = join(directory, ROUTER_RELATIVE)
-      if (existsSync(candidate)) return candidate
+      for (const relative of [ROUTER_RELATIVE, BUNDLE_RELATIVE]) {
+        const candidate = join(directory, relative)
+        if (existsSync(candidate)) return candidate
+      }
       const parent = dirname(directory)
       if (parent === directory) break
       directory = parent
@@ -28,6 +35,8 @@ function routerPath(): string | undefined {
 function nodeBinary(): string {
   const configured = process.env.HYRONCODE_9ROUTER_NODE
   if (configured) return configured
+  const bundled = join(process.resourcesPath, PACKAGED_NODE)
+  if (process.platform === "win32" && existsSync(bundled)) return bundled
   if (basename(process.execPath).toLowerCase() === "node.exe") return process.execPath
   const systemNode = join(process.env.ProgramFiles ?? "C:\\Program Files", "nodejs", "node.exe")
   return existsSync(systemNode) ? systemNode : "node"

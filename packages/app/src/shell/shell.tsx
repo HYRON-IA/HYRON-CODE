@@ -1,5 +1,6 @@
 import { Show, startTransition, Suspense, type ParentProps } from "solid-js"
 import { HyronToolsRail } from "@/shell/hyron-tools-rail"
+import { Hyron9RouterPanel } from "@/shell/hyron-9router-panel"
 import { HyronEasterEggs } from "@/shell/hyron-easter-eggs"
 import { HyronPersonalityDrawer } from "@/shell/hyron-personality-drawer" // HYRONCODE-09361-RIGHT-PERSONALITY // HYRONCODE-0936-LEFT-TOOLS
 import { createStore } from "solid-js/store"
@@ -291,6 +292,7 @@ export default function Layout(props: ParentProps) {
         </Show>
         <HyronToolsRail />
         <HyronPersonalityDrawer />
+        <Hyron9RouterPanel />
         <HyronEasterEggs />
         {/* Size containment collapses percentage-height descendants in WebKit. */}
         <main

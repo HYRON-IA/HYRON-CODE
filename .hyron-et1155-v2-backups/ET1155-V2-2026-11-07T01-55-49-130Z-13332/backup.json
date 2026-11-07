@@ -1,0 +1,9 @@
+{
+  "format": "HYRONCODE-ET1155-V2",
+  "created": "2026-11-07T01:55:49.135Z",
+  "target": "packages/app/src/settings/appearance/hyron-secret-characters.ts",
+  "before": "95d849925dafa6311b6c9ff1b46c31e1058208b9cadc914e6ccb0dc0828df801",
+  "after": "8726fca803ac8e402579aec14655837641b32182b5c339f546b6d40480b0a997",
+  "status": "installed",
+  "updated": "2026-11-07T01:55:52.421Z"
+}

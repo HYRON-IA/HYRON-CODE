@@ -100,9 +100,15 @@ test("shared packaging defaults", async () => {
   expect(config.nsis?.include).toBe(include)
   expect(await Bun.file(include).exists()).toBe(true)
   expect(config.files).toContain("!resources/opencode-cli*")
-  expect(config.extraResources).toEqual([
+  expect(config.extraResources).toContainEqual(
     { from: "resources/", to: "", filter: ["opencode-cli", "opencode-cli.exe", "opencode-cli.version"] },
-  ])
+  )
+  expect(config.extraResources).toContainEqual(
+    expect.objectContaining({ to: "hyron-9router/node_modules", filter: ["**/*"] }),
+  )
+  expect(config.extraResources).toContainEqual(
+    expect.objectContaining({ to: "hyron-9router/runtime", filter: ["node.exe", "LICENSE"] }),
+  )
 })
 
 test("trims external dependencies without excluding runtime files", () => {

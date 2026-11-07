@@ -20,6 +20,7 @@ import { showCliInstaller } from "./native/install-cli"
 import { createMenu, sendMenuCommand } from "./native/menu"
 import { DesktopCli } from "./service/desktop-cli"
 import { getLastFocusedWindow } from "./windows"
+import { registerHyron9RouterView } from "./hyron-9router-view"
 
 const services = Layer.mergeAll(DesktopFiles.layer, Plugins.layer)
 
@@ -44,6 +45,8 @@ export const registerIpcHandlers = Effect.gen(function* () {
   const lifecycle = yield* ApplicationLifecycle.Service
   const desktopCli = yield* DesktopCli.Service
   const runFork = Effect.runForkWith(yield* Effect.context())
+  const disposeHyron9Router = yield* Effect.sync(() => registerHyron9RouterView())
+  yield* Effect.addFinalizer(() => Effect.sync(disposeHyron9Router))
 
   const menu = {
     trigger: (id: string) => {

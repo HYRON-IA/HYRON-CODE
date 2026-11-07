@@ -59,6 +59,10 @@ function linuxExecutableName(appId: string): string {
   return appId.replace(/\.desktop$/, "")
 }
 
+// 9Router runtime and OpenCode V2 plugin are a single isolated npm dependency tree.
+// These are external Electron resources (not files inside app.asar).
+const hyron9RouterBundle = path.resolve(packageDir, "../../integrations/9router-preinstalled")
+
 const getBase = (appId: string): Configuration => {
   const target = getCurrentCli()
   const desktopName = `${appId}.desktop`
@@ -107,6 +111,16 @@ const getBase = (appId: string): Configuration => {
         to: "",
         filter: ["opencode-cli", "opencode-cli.exe", "opencode-cli.version"],
       },
+      {
+        from: path.join(hyron9RouterBundle, "node_modules"),
+        to: "hyron-9router/node_modules",
+        filter: ["**/*"],
+      },
+      {
+        from: path.join(hyron9RouterBundle, "runtime"),
+        to: "hyron-9router/runtime",
+        filter: ["node.exe", "LICENSE"],
+      },
     ],
     afterPack: async (context) => {
       const arch = Arch[context.arch]
@@ -127,6 +141,18 @@ const getBase = (appId: string): Configuration => {
       if ((await stat(version)).size === 0) throw new Error(`Bundled CLI version must be a non-empty file: ${version}`)
 
       if (context.electronPlatformName !== "win32") return
+
+      // A Windows installer must never succeed if the 9Router assets are absent.
+      for (const relative of [
+        "node_modules/9router/app/custom-server.js",
+        "node_modules/@vheins/opencode-9router/server.js",
+        "runtime/node.exe",
+        "runtime/LICENSE",
+      ]) {
+        const bundled = path.join(resources, "hyron-9router", relative)
+        if (!(await stat(bundled)).isFile()) throw new Error(`Missing bundled HYRONCODE 9Router file: ${bundled}`)
+      }
+      await NativeArch.verify(path.join(resources, "hyron-9router", "runtime", "node.exe"), arch)
 
       const prebuilds = path.join(
         resources,

@@ -145,7 +145,21 @@ const scan = Effect.fn("ConfigPluginSource.scan")(function* (
         return { ...operation, target }
       }),
     )
-  const resolved = yield* Effect.forEach(configured, (operation) =>
+  // The packaged Electron app exposes the plugin directory to the sidecar.
+  // Explicit user configuration takes precedence: never duplicate a custom
+  // installation or override an explicit removal. Nothing edits opencode.json.
+  const builtInDirectory = process.env.HYRONCODE_9ROUTER_PLUGIN_DIR
+  const explicitRouter = configured.some((operation) =>
+    operation.target.toLowerCase().includes("opencode-9router"),
+  )
+  const bundled: Operation[] =
+    process.env.HYRONCODE_DISABLE_BUNDLED_9ROUTER !== "1" &&
+    builtInDirectory &&
+    path.isAbsolute(builtInDirectory) &&
+    !explicitRouter
+      ? [{ type: "add", target: builtInDirectory, options: {} }]
+      : []
+  const resolved = yield* Effect.forEach([...bundled, ...configured], (operation) =>
     Effect.gen(function* () {
       if (operation.type === "remove" || !path.isAbsolute(operation.target)) return Option.some(operation)
       if (yield* fs.isFile(operation.target)) {

@@ -1,0 +1,9 @@
+{
+  "name": "hyroncode-9router-preinstalled",
+  "private": true,
+  "version": "1.0.2",
+  "dependencies": {
+    "9router": "0.5.112",
+    "@vheins/opencode-9router": "0.9.1"
+  }
+}
