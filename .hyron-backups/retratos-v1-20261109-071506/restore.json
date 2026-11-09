@@ -1,0 +1,146 @@
+{
+    "root":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE",
+    "actions":  [
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\portraits\\FI-072.jpg",
+                        "existed":  false,
+                        "file":  "FI-072.jpg",
+                        "id":  "FI-072",
+                        "kind":  "portrait"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\portraits\\JO-050.jpg",
+                        "existed":  true,
+                        "file":  "JO-050.jpg",
+                        "id":  "JO-050",
+                        "kind":  "portrait"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\portraits\\JO-085.jpg",
+                        "existed":  false,
+                        "file":  "JO-085.jpg",
+                        "id":  "JO-085",
+                        "kind":  "portrait"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\portraits\\JO-093.jpg",
+                        "existed":  false,
+                        "file":  "JO-093.jpg",
+                        "id":  "JO-093",
+                        "kind":  "portrait"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-001.svg",
+                        "existed":  true,
+                        "file":  "SEC-001.png",
+                        "id":  "SEC-001",
+                        "kind":  "secret"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-002.svg",
+                        "existed":  true,
+                        "file":  "SEC-002.png",
+                        "id":  "SEC-002",
+                        "kind":  "secret"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-003.svg",
+                        "existed":  true,
+                        "file":  "SEC-003.png",
+                        "id":  "SEC-003",
+                        "kind":  "secret"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-004.svg",
+                        "existed":  true,
+                        "file":  "SEC-004.png",
+                        "id":  "SEC-004",
+                        "kind":  "secret"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-005.svg",
+                        "existed":  true,
+                        "file":  "SEC-005.png",
+                        "id":  "SEC-005",
+                        "kind":  "secret"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-006.svg",
+                        "existed":  true,
+                        "file":  "SEC-006.png",
+                        "id":  "SEC-006",
+                        "kind":  "secret"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-007.svg",
+                        "existed":  true,
+                        "file":  "SEC-007.png",
+                        "id":  "SEC-007",
+                        "kind":  "secret"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-008.svg",
+                        "existed":  true,
+                        "file":  "SEC-008.png",
+                        "id":  "SEC-008",
+                        "kind":  "secret"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-009.svg",
+                        "existed":  true,
+                        "file":  "SEC-009.png",
+                        "id":  "SEC-009",
+                        "kind":  "secret"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-010.svg",
+                        "existed":  true,
+                        "file":  "SEC-010.png",
+                        "id":  "SEC-010",
+                        "kind":  "secret"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-011.svg",
+                        "existed":  true,
+                        "file":  "SEC-011.jpg",
+                        "id":  "SEC-011",
+                        "kind":  "secret"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-012.svg",
+                        "existed":  true,
+                        "file":  "SEC-012.jpg",
+                        "id":  "SEC-012",
+                        "kind":  "secret"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\portraits\\SÉ-075.jpg",
+                        "existed":  false,
+                        "file":  "SÉ-075.jpg",
+                        "id":  "SÉ-075",
+                        "kind":  "portrait"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\portraits\\SÉ-076.jpg",
+                        "existed":  false,
+                        "file":  "SÉ-076.jpg",
+                        "id":  "SÉ-076",
+                        "kind":  "portrait"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\portraits\\SÉ-079.jpg",
+                        "existed":  false,
+                        "file":  "SÉ-079.jpg",
+                        "id":  "SÉ-079",
+                        "kind":  "portrait"
+                    },
+                    {
+                        "path":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\portraits\\manifest.json",
+                        "existed":  true,
+                        "file":  "manifest.json",
+                        "id":  "manifest",
+                        "kind":  "manifest"
+                    }
+                ],
+    "backupDirectory":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\.hyron-backups\\retratos-v1-20261109-071506"
+}

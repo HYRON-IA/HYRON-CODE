@@ -70,7 +70,8 @@ function nativeTarget() {
 }
 
 export function getCurrentCli(target = process.env.OPENCODE_TARGET ?? nativeTarget()) {
-  const binaryConfig = CLI_BINARIES.find((item) => item.target === target)
+  const normalizedTarget = target === "windows-x64-baseline" ? "windows-x64" : target
+  const binaryConfig = CLI_BINARIES.find((item) => item.target === normalizedTarget)
 
   if (!binaryConfig) throw new Error(`CLI configuration not available for target '${target}'`)
 

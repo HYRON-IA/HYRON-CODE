@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 288" role="img" aria-label="Avatar estilizado de Viniccius13">
+<defs><radialGradient id="bg"><stop stop-color="#a9edc1"/><stop offset="1" stop-color="#397053"/></radialGradient><linearGradient id="s" x2="0" y2="1"><stop stop-color="#76bf8e"/><stop offset="1" stop-color="#397053"/></linearGradient></defs>
+<rect width="288" height="288" rx="45" fill="url(#bg)"/>
+<circle cx="144" cy="142" r="116" fill="#a9edc1" opacity=".20"/>
+<rect x="99" y="28" width="88" height="41" rx="8" fill="#397053"/><path d="M108 48h70 M144 35v27" stroke="#76bf8e" stroke-width="6"/>
+<path d="M20 282 Q35 212 98 211 L190 211 Q251 218 269 282" fill="#397053" stroke="#a9edc1" stroke-width="6" />
+<ellipse cx="144" cy="145" rx="80" ry="91" fill="#76bf8e" stroke="#397053" stroke-width="8"/>
+<path d="M64 140 Q65 44 144 51 Q223 41 225 139 L195 102 L164 97 L145 82 L116 105 L92 101Z" fill="#397053" opacity=".96" />
+<ellipse cx="111" cy="160" rx="12" ry="15" fill="#16252a"/><ellipse cx="178" cy="160" rx="12" ry="15" fill="#16252a"/>
+<circle cx="115" cy="154" r="4" fill="white"/><circle cx="182" cy="154" r="4" fill="white"/>
+<ellipse cx="91" cy="188" rx="16" ry="7" fill="#f6a3bc" opacity=".55"/><ellipse cx="198" cy="188" rx="16" ry="7" fill="#f6a3bc" opacity=".55"/>
+<path d="M132 190 Q144 201 156 190" fill="none" stroke="#60445b" stroke-linecap="round" stroke-width="5"/>
+<rect x="16" y="241" width="256" height="34" rx="14" fill="#10252b" opacity=".89"/>
+<text x="144" y="264" text-anchor="middle" fill="white" font-family="sans-serif" font-size="20" font-weight="bold">Viniccius13</text>
+</svg>

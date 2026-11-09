@@ -1,0 +1,102 @@
+﻿[
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\portraits\\manifest.json",
+        "existed":  true,
+        "backup":  "original-000"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\src\\settings\\appearance\\hyron-secret-characters.ts",
+        "existed":  true,
+        "backup":  "original-001"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\portraits\\FI-072.jpg",
+        "existed":  true,
+        "backup":  "original-002"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\portraits\\SÉ-076.jpg",
+        "existed":  true,
+        "backup":  "original-003"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\portraits\\SÉ-075.jpg",
+        "existed":  true,
+        "backup":  "original-004"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\portraits\\JO-093.jpg",
+        "existed":  true,
+        "backup":  "original-005"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\portraits\\SÉ-079.jpg",
+        "existed":  true,
+        "backup":  "original-006"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\portraits\\JO-085.png",
+        "existed":  false,
+        "backup":  "original-007"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-001.png",
+        "existed":  false,
+        "backup":  "original-008"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-002.png",
+        "existed":  false,
+        "backup":  "original-009"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-003.png",
+        "existed":  false,
+        "backup":  "original-010"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-004.png",
+        "existed":  false,
+        "backup":  "original-011"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-005.png",
+        "existed":  false,
+        "backup":  "original-012"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-006.png",
+        "existed":  false,
+        "backup":  "original-013"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-007.png",
+        "existed":  false,
+        "backup":  "original-014"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-008.png",
+        "existed":  false,
+        "backup":  "original-015"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-009.png",
+        "existed":  false,
+        "backup":  "original-016"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-010.png",
+        "existed":  false,
+        "backup":  "original-017"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-011.jpg",
+        "existed":  false,
+        "backup":  "original-018"
+    },
+    {
+        "target":  "C:\\Users\\Teodoro\\Downloads\\PROJECT H.Y.R.O.N\\HYRON-CODE\\packages\\app\\public\\personalities\\secret-avatars\\SEC-012.jpg",
+        "existed":  false,
+        "backup":  "original-019"
+    }
+]

@@ -46,14 +46,17 @@ const connect = Effect.fn("BackgroundService.connect")(function* (mode: "initial
   if (isolated) process.env.XDG_STATE_HOME = app.getPath("userData")
   const client = yield* Effect.promise(() => import("@opencode/client/service"))
 
+  // HYRONCODE: channel-specific desktop service registration
+  // Keep the same filename convention as CLI services/service-config.ts.
+  const stateRoot = process.env.XDG_STATE_HOME ?? path.join(app.getPath("home"), ".local", "state")
+  const channelFile =
+    CHANNEL === "dev" || CHANNEL === "beta"
+      ? undefined
+      : path.join(stateRoot, "opencode", `service-${CHANNEL.replace(/[^a-zA-Z0-9._-]/g, "-")}.json`)
   const file =
     process.env.OPENCODE_DESKTOP_SERVER_CHANNEL === "local"
-      ? path.join(
-          process.env.XDG_STATE_HOME ?? path.join(app.getPath("home"), ".local", "state"),
-          "opencode",
-          "service-local.json",
-        )
-      : undefined
+      ? path.join(stateRoot, "opencode", "service-local.json")
+      : channelFile
 
   const ensure = (required = version) =>
     client.Service.ensure({

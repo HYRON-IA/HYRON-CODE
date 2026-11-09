@@ -37,3 +37,6 @@ logs/
 *.bun-build
 tsconfig.tsbuildinfo
 /artifacts/
+
+# Cache local do Bun
+packages/cli/.bun-cache/
